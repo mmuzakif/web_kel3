@@ -1,0 +1,101 @@
+body {
+    width: 650px;
+    margin: 50px auto;
+    font-family: Arial, sans-serif;
+    font-size: 16px;
+}
+
+.judul {
+    text-align: center;
+    font-weight: bold;
+    background-color: aqua;
+    width: fit-content;
+    margin: auto;
+}
+
+.pembukaan {
+    text-align: center;
+    font-weight: bold;
+    color:aliceblue;
+    background-color: blue;
+    width: fit-content;
+    margin: 5px auto;
+}
+
+.paragraf1 {
+    text-align: justify;
+    border: 2px solid red;
+    padding: 7px;
+}
+
+.justify {
+    text-align: justify;
+}
+
+.highlight {
+    background-color: rgb(46, 249, 46);
+    width: fit-content;
+}
+
+.kuning {
+    background-color: yellow;
+    width: fit-content;
+}
+
+.garisBawah {
+    font-style: italic;
+    text-decoration: underline;
+}
+
+.biruNKRI {
+    font-weight: bold;
+    color: blue;
+}
+
+.sumber {
+    font-weight: bold;
+}
+
+.sumber-link {
+    color: blue;
+    text-decoration: underline;
+}
+
+.sumber-link:hover {
+    color: red;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+td {
+    border: 2px solid black;
+    height: 35px;
+    padding: 10px;
+    vertical-align: top;
+    font-size: 16px;
+    font-weight: bold;
+    color: red;
+}
+.judulPancasila{
+    text-align: center;
+    font-weight: bold;
+    background-color: aqua;
+    width: fit-content;
+    margin: auto;
+    margin: 10px auto;
+}
+
+.isiPancasila {
+    display: block;
+    width: fit-content;
+    max-width: 90%;
+    background-color: yellow;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+    margin-bottom: 3px;
+}
+

@@ -1,0 +1,72 @@
+.judul{
+    text-align: center;
+    font-weight: bold;
+}
+
+.judul2{
+    text-align: center;
+}
+
+.kotak {
+    border: 1px solid black;
+}
+
+.blok {
+    background-color: yellow;
+}
+
+.bacaan1{
+    font-weight: bold;
+    color : blue;
+
+}
+
+.bacaan2{
+    font-style:italic ;
+    color: red;
+    text-decoration: underline;
+
+}
+
+.bacaan3:hover {
+    color: red;
+}
+
+.bacaan31 {
+    font-style:italic ;
+    font-weight: bold;
+    color : blue;
+    text-decoration: underline
+
+    
+}
+
+.bacaan4{
+
+    font-weight: bold;
+}
+.blok2 {
+    text-align: center;
+    font-weight: bold;
+    background-color: cyan;
+    width: fit-content;
+    margin: auto;
+}
+
+.blok3 {
+    background-color: yellow;
+    font-weight: bold;
+    font-style: italic;
+    text-decoration: underline;
+    width: fit-content;
+    list-style-position: inside;
+}
+
+.blok4 {
+    text-align: center;
+    margin: auto;
+    background-color: blue;
+    font-weight: bold;
+    width: fit-content;
+    color: white;
+}
