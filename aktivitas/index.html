@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - SITEI UNRI</title>
+  
+  <!-- Import Bulma CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+  <!-- Import FontAwesome untuk icon mata pada password -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Import CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="login-wrapper">
+    <div class="login-container columns is-gapless is-vcentered m-0">
+            
+      <!-- Kolom Kiri: Visual / Gambar Kolase -->
+      <div class="column is-7 left-side">
+        <img src="TE.jpeg" alt="Banner SITEI" class="banner-img">
+      </div>
+
+      <!-- Kolom Kanan: Form Login -->
+      <div class="column is-5 form-container">
+        
+        <!-- Header Logo -->
+        <div class="brand-header">
+          <img src="logo unri.png" alt="Logo UNRI" class="brand-logo">
+          <div class="brand-divider"></div>
+          <div class="brand-text">
+            Sistem Informasi<br>Teknik Elektro &<br>Informatika
+          </div>
+        </div>
+
+        <!-- Form Input -->
+        <form action="#" method="POST" id="loginForm">
+          <div class="field mb-4">
+            <div class="control">
+              <input class="input is-medium is-radiusless custom-input" type="text" placeholder="NIP/NIM *">
+            </div>
+          </div>
+
+          <div class="field mb-5">
+            <div class="control has-icons-right">
+              <input class="input is-medium is-radiusless custom-input" type="password" id="passwordInput" placeholder="Password *">
+
+              <!-- Tombol Show/Hide Password -->
+              <span class="icon is-right" id="togglePassword">
+                <i class="fa-solid fa-eye-slash" id="eyeIcon"></i>
+              </span>
+            </div>
+          </div>
+
+          <div class="field mb-4">
+            <div class="control">
+              <button type="submit" class="button btn-masuk is-fullwidth is-medium is-radiusless">
+                Masuk
+              </button>
+            </div>
+          </div>
+        </form>
+
+        <!-- Informasi Bawah Form -->
+        <div class="has-text-centered mt-4">
+          <p class="is-size-7 mb-2">
+            Belum Punya Akun atau Lupa Password<br>
+            (Hubungi Admin Prodi)
+          </p>
+          
+          <div class="divider-line"></div>
+          
+          <div class="footer-text has-text-grey">
+            <p>Dikembangkan oleh:</p>
+            <p class="has-text-weight-bold has-text-dark is-underlined mb-1">TIM PRODI TEKNIK INFORMATIKA</p>
+            <p class="copyright-text">2026 &copy; SITEI JTE UNRI</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Import JavaScript -->
+  <script src="script.js"></script>
+</body>
+</html>
