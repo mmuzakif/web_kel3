@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 50px;
+}
+
+h1 {
+    color: rgb(47, 44, 44);
+}
+
+#hasil {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 50px 60px;
+}
+
+h3 {
+    text-align: center;
+}
+
+#uud {
+    display: none;
+}
+
+p {
+    text-align: justify;
+}
+
+.highlight {
+    background-color: rgb(197, 0, 197);
+}
+
+.highlight2 {
+    background-color: red;
+}
+
+.highlight3 {
+    background-color: rgb(30, 255, 0);
+}
+
+.highlight4 {
+    color: rgb(163, 62, 199);
+    font-weight: bold;
+    font-size: large;
+}
+    
+.highlight5 {
+    background-color: blue;
+    color: white;
+}
+
+.pancasila {
+    text-align: left;
+}

@@ -1,0 +1,36 @@
+#wrapper {
+     margin: auto;
+     max-width: 1200px;
+}
+
+#isi {
+     text-align: justify;
+     
+}
+
+.latar-ungu {
+     background-color: magenta;
+}
+
+.tulisan-pink {
+     color: purple;
+}
+.latar-merah {
+     background-color: red;
+}
+
+.latar-hijau {
+     background-color: lime;
+}
+
+.latar-biru {
+     background-color: blue;
+}
+
+.tulisan-putih {
+     color: white;
+}
+
+.rata-tengah {
+     text-align: center;
+}
