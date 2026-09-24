@@ -26,8 +26,8 @@
         }
 
         /* ============================================================
-           FIXED SIZE FRAME
-           Mobile: 320px × 667px (min)
+           FIXED SIZE FRAME (scroll page, not slides)
+           Mobile: 320px × 667px (min height)
            Desktop: 1024px × auto
            Desktop Large: 2560px × auto
            ============================================================ */
@@ -70,7 +70,7 @@
         .admin-link { text-decoration: none; color: var(--text-light); font-size: 1rem; opacity: 0.3; transition: opacity 0.3s; }
         .admin-link:hover { opacity: 1; }
 
-        /* Sections */
+        /* Sections — all stack vertically */
         section {
             padding: 60px 20px;
             text-align: center;
@@ -102,7 +102,6 @@
         .guest-card .name { font-family: var(--font-serif); font-size: 1.1rem; }
 
         /* Quote */
-        .quote-section { max-width: 100%; margin: 0 auto; }
         .quote-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; margin: 30px 0; font-style: italic; color: var(--text-dark); }
         .opening-text { max-width: 100%; margin: 0 auto; color: var(--text-light); font-size: 0.95rem; }
         .signature { font-family: var(--font-serif); font-size: 1.6rem; margin-top: 30px; }
@@ -120,27 +119,24 @@
         /* Event */
         .date-highlight { font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 30px; letter-spacing: 2px; }
         .event-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 100%; margin: 0 auto; width: 100%; }
-        .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; transition: transform 0.3s ease; }
-        .event-card:hover { transform: translateY(-5px); }
+        .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; }
         .event-icon { font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-green); }
         .event-title { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 10px; }
         .event-time { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--accent-green); }
         .event-location { font-size: 0.85rem; color: var(--text-light); }
 
         /* Location */
-        .map-wrapper { width: 100%; max-width: 100%; height: 250px; border-radius: 15px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border: 1px solid var(--border-color); }
+        .map-wrapper { width: 100%; max-width: 100%; height: 250px; border-radius: 15px; overflow: hidden; margin: 30px 0; border: 1px solid var(--border-color); }
         .map-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
-        .location-details { max-width: 100%; margin: 0 auto; }
         .location-name { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 8px; }
         .location-address { color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px; }
         .location-note { font-size: 0.75rem; color: var(--text-light); margin-top: 12px; }
 
         /* Gallery */
         .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 100%; margin: 30px auto 0; }
-        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; position: relative; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
-        .gallery-item:hover img { transform: scale(1.05); }
-        .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; color: var(--text-dark); }
+        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; }
+        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; }
 
         /* Timeline */
         .timeline { max-width: 100%; margin: 30px auto 0; text-align: left; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); }
@@ -152,27 +148,24 @@
 
         /* RSVP */
         .rsvp-container { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 100%; margin: 30px auto 0; text-align: left; width: 100%; }
-        .rsvp-form { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .rsvp-form { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 0.9rem; background: #fafafa; transition: border 0.3s; }
-        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-green); }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 0.9rem; background: #fafafa; }
         .form-group textarea { resize: vertical; min-height: 100px; }
         .radio-group { display: flex; gap: 15px; margin-bottom: 20px; }
-        .radio-group label { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; text-transform: none; letter-spacing: 0; cursor: pointer; font-weight: 400; color: var(--text-dark); }
-        .radio-group input[type="radio"] { width: auto; accent-color: var(--accent-green); }
+        .radio-group label { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; text-transform: none; letter-spacing: 0; cursor: pointer; font-weight: 400; }
         .wishes-list { display: flex; flex-direction: column; gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
-        .wishes-list::-webkit-scrollbar { width: 5px; }
-        .wishes-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-        .wishes-list::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
         .wish-card { background: var(--card-bg); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); }
         .wish-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
         .wish-avatar { width: 35px; height: 35px; border-radius: 50%; background-color: #e6e3db; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent-green); font-size: 0.7rem; text-transform: uppercase; }
         .wish-name { font-weight: 600; font-size: 0.85rem; }
         .wish-text { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
-        .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; }
+        .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; }
 
-        /* === DESKTOP OVERRIDES (1024px) === */
+        /* ============================================================
+           DESKTOP OVERRIDES (1024px)
+           ============================================================ */
         @media (min-width: 1024px) {
             .top-nav { padding: 24px 60px; font-size: 0.8rem; }
             .logo { font-size: 1.8rem; }
@@ -193,7 +186,9 @@
             .rsvp-container { grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1000px; }
         }
 
-        /* === DESKTOP LARGE OVERRIDES (2560px) === */
+        /* ============================================================
+           DESKTOP LARGE OVERRIDES (2560px)
+           ============================================================ */
         @media (min-width: 2560px) {
             .top-nav { padding: 30px 120px; }
             section { padding: 120px 120px; }
@@ -241,12 +236,10 @@
         <section>
             <div class="section-subtitle">Assalamualaikum Wr. Wb.</div>
             <h2 class="section-title">Dengan penuh syukur</h2>
-            <div class="quote-section">
-                <p class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</p>
-                <div class="section-subtitle" style="margin-bottom: 40px;">AR-RUM · 21</div>
-                <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
-                <p class="signature">Lancelot & Odette</p>
-            </div>
+            <div class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</div>
+            <div class="section-subtitle" style="margin-bottom: 40px;">AR-RUM · 21</div>
+            <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
+            <p class="signature">Lancelot & Odette</p>
         </section>
 
         <section>
@@ -296,12 +289,10 @@
             <div class="map-wrapper">
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
             </div>
-            <div class="location-details">
-                <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
-                <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
-                <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
-                <p class="location-note">Parkir tersedia di area sekitar · Akses transportasi umum tersedia</p>
-            </div>
+            <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
+            <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
+            <p class="location-note">Parkir tersedia · Akses transportasi umum tersedia</p>
         </section>
 
         <section>
