@@ -317,7 +317,7 @@
             color: var(--text-light);
         }
 
-        /* --- 5. LOKASI ACARA PAGE --- */
+        /* --- 5. LOKASI ACARA PAGE (UPDATED WITH REAL MAP) --- */
         .map-wrapper {
             width: 100%;
             max-width: 900px;
@@ -327,29 +327,14 @@
             margin: 40px 0;
             box-shadow: 0 10px 30px rgba(0,0,0,0.05);
             position: relative;
+            border: 1px solid var(--border-color);
         }
 
-        .map-wrapper img {
+        .map-wrapper iframe {
             width: 100%;
             height: 100%;
-            object-fit: cover;
-        }
-
-        .map-overlay {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: white;
-            padding: 12px 24px;
-            border-radius: 30px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--text-dark);
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            border: none;
+            display: block;
         }
 
         .location-details {
@@ -666,7 +651,7 @@
         </div>
         <div class="section-subtitle">Pernikahan</div>
         <h1 class="cover-title">Lancelot & Odette</h1>
-        <div class="cover-date">12 · 10 · 2026 — REYKJAVIK</div>
+        <div class="cover-date">12 · 10 · 2026 — ISTANBUL</div>
         
         <div class="guest-card">
             <div class="small">Kepada Yth.</div>
@@ -730,38 +715,40 @@
                 <div class="event-icon">⏰</div>
                 <h3 class="event-title">Akad Nikah</h3>
                 <div class="event-time">08.00 — 09.30 WIB</div>
-                <div class="event-location">Hallgrímskirkja Church, Reykjavik</div>
+                <div class="event-location">Hagia Sophia Grand Mosque, Istanbul</div>
             </div>
             
             <div class="event-card">
                 <div class="event-icon">🥂</div>
                 <h3 class="event-title">Resepsi</h3>
                 <div class="event-time">11.00 — 14.00 WIB</div>
-                <div class="event-location">Harpa Concert Hall, Reykjavik</div>
+                <div class="event-location">Hagia Sophia Grand Mosque, Istanbul</div>
             </div>
         </div>
         
         <button class="btn" style="margin-top: 40px;">📅 SIMPAN TANGGAL</button>
     </section>
 
-    <!-- ================= PAGE 5: LOKASI ACARA (UPDATED FOR ICELAND) ================= -->
+    <!-- ================= PAGE 5: LOKASI ACARA (REAL GOOGLE MAPS) ================= -->
     <section>
         <div class="section-subtitle">Tempat Kami Berjanji</div>
-        <h2 class="section-title">Reykjavik, Iceland</h2>
+        <h2 class="section-title">Hagia Sophia</h2>
         
         <div class="map-wrapper">
-            <!-- A beautiful map/landscape image of Reykjavik, Iceland -->
-            <img src="https://images.unsplash.com/photo-1504829857797-ddff29c27927?q=80&w=1200&auto=format&fit=crop" alt="Reykjavik Map Location">
-            <div class="map-overlay">
-                📍 Reykjavik, Iceland
-            </div>
+            <!-- REAL GOOGLE MAPS IFRAME -->
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" 
+                allowfullscreen="" 
+                loading="lazy" 
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
         </div>
         
         <div class="location-details">
-            <h3 class="location-name">Harpa Concert Hall</h3>
-            <p class="location-address">Austurbakki 2, 101 Reykjavík, Iceland</p>
-            <button class="btn">➔ PETUNJUK ARAH</button>
-            <p class="location-note">Parkir tersedia di area hotel · Valet tersedia</p>
+            <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
+            <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
+            <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
+            <p class="location-note">Parkir tersedia di area sekitar · Akses transportasi umum tersedia</p>
         </div>
     </section>
 
