@@ -7,16 +7,10 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f6f1;
-            --text-dark: #2c2c2c;
-            --text-light: #6b6b6b;
-            --accent-green: #4f5e53;
-            --card-bg: #ffffff;
-            --border-color: #e6e3db;
-            --font-serif: 'Playfair Display', serif;
-            --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --bg-color: #f8f6f1; --text-dark: #2c2c2c; --text-light: #6b6b6b;
+            --accent-green: #4f5e53; --card-bg: #ffffff; --border-color: #e6e3db;
+            --font-serif: 'Playfair Display', serif; --font-sans: 'Plus Jakarta Sans', sans-serif;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
@@ -31,66 +25,58 @@
             padding: 20px 0;
         }
 
-        /* --- FIXED RESPONSIVE FRAME --- */
+        /* ============================================================
+           FIXED SIZE FRAME
+           Mobile: 320px × 667px (min)
+           Desktop: 1024px × auto
+           Desktop Large: 2560px × auto
+           ============================================================ */
         .frame-container {
-            width: 100%;
-            max-width: 320px; /* Mobile: 320px */
-            min-height: 667px; /* Mobile: 667px min height */
+            width: 320px;
+            min-height: 667px;
+            height: auto;
             background-color: var(--bg-color);
             box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             border-radius: 12px;
             overflow: hidden;
             position: relative;
-            transition: max-width 0.3s ease;
         }
 
-        /* Desktop Small: 1024px */
         @media (min-width: 1024px) {
-            .frame-container { max-width: 1024px; }
+            .frame-container { width: 1024px; }
         }
-
-        /* Desktop Large: 2560px */
         @media (min-width: 2560px) {
-            .frame-container { max-width: 2560px; }
+            .frame-container { width: 2560px; }
         }
 
         .app-content {
             width: 100%;
             height: 100%;
-            overflow-y: auto;
             position: relative;
         }
 
         /* Top Nav */
         .top-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            display: flex; justify-content: space-between; align-items: center;
             padding: 20px 25px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.7rem;
-            letter-spacing: 1.5px;
-            color: var(--text-light);
-            text-transform: uppercase;
-            background: var(--bg-color);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            font-size: 0.7rem; letter-spacing: 1.5px; color: var(--text-light);
+            text-transform: uppercase; background: var(--bg-color);
+            position: sticky; top: 0; z-index: 100;
         }
-
         .logo { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; color: var(--text-dark); letter-spacing: 2px; }
         .nav-center { text-align: center; flex: 1; }
+        .nav-right { display: flex; align-items: center; gap: 15px; }
+        .admin-link { text-decoration: none; color: var(--text-light); font-size: 1rem; opacity: 0.3; transition: opacity 0.3s; }
+        .admin-link:hover { opacity: 1; }
 
-        /* General Section */
+        /* Sections */
         section {
             padding: 60px 20px;
             text-align: center;
             border-bottom: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            display: flex; flex-direction: column; align-items: center;
         }
-
         section:last-of-type { border-bottom: none; }
 
         .section-subtitle { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-light); margin-bottom: 15px; }
@@ -105,31 +91,23 @@
         }
         .btn:hover { background-color: #3d4a40; transform: translateY(-2px); }
 
-        /* COVER */
+        /* Cover */
         .cover-section { padding-top: 30px; }
-        .cover-image-wrapper {
-            width: 100%; max-width: 260px; aspect-ratio: 3/4;
-            border-radius: 130px 130px 15px 15px; overflow: hidden;
-            margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.08);
-        }
+        .cover-image-wrapper { width: 100%; max-width: 260px; aspect-ratio: 3/4; border-radius: 130px 130px 15px 15px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
         .cover-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
         .cover-title { font-family: var(--font-serif); font-size: 2.8rem; margin-bottom: 8px; line-height: 1.1; }
         .cover-date { font-size: 0.85rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 30px; }
-
-        .guest-card {
-            background: var(--card-bg); padding: 18px 30px; border-radius: 12px;
-            border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px;
-        }
+        .guest-card { background: var(--card-bg); padding: 18px 30px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px; }
         .guest-card .small { font-size: 0.7rem; color: var(--text-light); margin-bottom: 3px; }
         .guest-card .name { font-family: var(--font-serif); font-size: 1.1rem; }
 
-        /* QUOTE */
+        /* Quote */
         .quote-section { max-width: 100%; margin: 0 auto; }
         .quote-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; margin: 30px 0; font-style: italic; color: var(--text-dark); }
         .opening-text { max-width: 100%; margin: 0 auto; color: var(--text-light); font-size: 0.95rem; }
         .signature { font-family: var(--font-serif); font-size: 1.6rem; margin-top: 30px; }
 
-        /* COUPLE */
+        /* Couple */
         .couple-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 100%; margin: 30px auto 0; width: 100%; }
         .couple-card { text-align: center; }
         .couple-img { width: 160px; height: 160px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 5px solid var(--card-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
@@ -139,7 +117,7 @@
         .couple-parents { font-size: 0.8rem; color: var(--text-light); line-height: 1.7; }
         .couple-footer { font-family: var(--font-serif); font-style: italic; margin-top: 40px; font-size: 1.1rem; color: var(--text-dark); }
 
-        /* EVENT */
+        /* Event */
         .date-highlight { font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 30px; letter-spacing: 2px; }
         .event-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 100%; margin: 0 auto; width: 100%; }
         .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; transition: transform 0.3s ease; }
@@ -149,7 +127,7 @@
         .event-time { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--accent-green); }
         .event-location { font-size: 0.85rem; color: var(--text-light); }
 
-        /* LOCATION */
+        /* Location */
         .map-wrapper { width: 100%; max-width: 100%; height: 250px; border-radius: 15px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border: 1px solid var(--border-color); }
         .map-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
         .location-details { max-width: 100%; margin: 0 auto; }
@@ -157,14 +135,14 @@
         .location-address { color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px; }
         .location-note { font-size: 0.75rem; color: var(--text-light); margin-top: 12px; }
 
-        /* GALLERY */
+        /* Gallery */
         .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 100%; margin: 30px auto 0; }
         .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; position: relative; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .gallery-item:hover img { transform: scale(1.05); }
         .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; color: var(--text-dark); }
 
-        /* TIMELINE */
+        /* Timeline */
         .timeline { max-width: 100%; margin: 30px auto 0; text-align: left; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); }
         .timeline-item { margin-bottom: 30px; position: relative; padding-left: 25px; }
         .timeline-item::before { content: ''; position: absolute; left: -27px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background-color: var(--accent-green); border: 3px solid var(--bg-color); box-shadow: 0 0 0 2px var(--accent-green); }
@@ -194,7 +172,7 @@
         .wish-text { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
         .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; }
 
-        /* --- DESKTOP OVERRIDES (1024px+) --- */
+        /* === DESKTOP OVERRIDES (1024px) === */
         @media (min-width: 1024px) {
             .top-nav { padding: 24px 60px; font-size: 0.8rem; }
             .logo { font-size: 1.8rem; }
@@ -215,7 +193,7 @@
             .rsvp-container { grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1000px; }
         }
 
-        /* --- DESKTOP LARGE OVERRIDES (2560px) --- */
+        /* === DESKTOP LARGE OVERRIDES (2560px) === */
         @media (min-width: 2560px) {
             .top-nav { padding: 30px 120px; }
             section { padding: 120px 120px; }
@@ -240,12 +218,15 @@
         <header class="top-nav">
             <div class="logo">L·O</div>
             <div class="nav-center">Undangan</div>
-            <div class="nav-right">🔊</div>
+            <div class="nav-right">
+                <span>🔊</span>
+                <a href="../dashboard.html" class="admin-link" title="Admin Dashboard">⚙</a>
+            </div>
         </header>
 
         <section class="cover-section">
             <div class="cover-image-wrapper">
-                <img src="bunga_final2.jpeg" alt="Lancelot & Odette Cover">
+                <img src="bunga_final2.jpeg" alt="Cover">
             </div>
             <div class="section-subtitle">Pernikahan</div>
             <h1 class="cover-title">Lancelot & Odette</h1>
@@ -313,7 +294,7 @@
             <div class="section-subtitle">Tempat Kami Berjanji</div>
             <h2 class="section-title">Hagia Sophia</h2>
             <div class="map-wrapper">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
             </div>
             <div class="location-details">
                 <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
@@ -368,14 +349,8 @@
             <div class="wish-count">UCAPAN TERBARU · 24</div>
             <div class="rsvp-container">
                 <div class="rsvp-form">
-                    <div class="form-group">
-                        <label>Nama</label>
-                        <input type="text" placeholder="Nama Anda">
-                    </div>
-                    <div class="form-group">
-                        <label>Ucapan</label>
-                        <textarea placeholder="Tuliskan doa dan ucapan hangat..."></textarea>
-                    </div>
+                    <div class="form-group"><label>Nama</label><input type="text" placeholder="Nama Anda"></div>
+                    <div class="form-group"><label>Ucapan</label><textarea placeholder="Tuliskan doa dan ucapan hangat..."></textarea></div>
                     <div class="form-group">
                         <label>Konfirmasi Kehadiran</label>
                         <div class="radio-group">
@@ -392,7 +367,7 @@
                     </div>
                     <div class="wish-card">
                         <div class="wish-header"><div class="wish-avatar">MA</div><div class="wish-name">Maya</div></div>
-                        <div class="wish-text">Turut berbahagia untuk Lancelot dan Odette. Langgeng sampai tua bersama!</div>
+                        <div class="wish-text">Turut berbahagia untuk kedua mempelai. Langgeng sampai tua bersama!</div>
                     </div>
                     <div class="wish-card">
                         <div class="wish-header"><div class="wish-avatar">BS</div><div class="wish-name">Budi Santoso</div></div>
