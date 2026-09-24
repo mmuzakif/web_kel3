@@ -7,10 +7,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-color: #f8f6f1; --text-dark: #2c2c2c; --text-light: #6b6b6b;
-            --accent-green: #4f5e53; --card-bg: #ffffff; --border-color: #e6e3db;
-            --font-serif: 'Playfair Display', serif; --font-sans: 'Plus Jakarta Sans', sans-serif;
+            --bg-color: #f8f6f1;
+            --text-dark: #2c2c2c;
+            --text-light: #6b6b6b;
+            --accent-green: #4f5e53;
+            --card-bg: #ffffff;
+            --border-color: #e6e3db;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Plus Jakarta Sans', sans-serif;
         }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         html, body {
@@ -18,99 +24,75 @@
             font-family: var(--font-sans);
             color: var(--text-dark);
             line-height: 1.6;
-            height: 100vh;
-            width: 100vw;
-            overflow: hidden;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
+            align-items: flex-start;
+            padding: 20px 0;
         }
 
-        /* ============================================================
-           SLIDE DECK CONTAINER
-           Mobile: 320px x 667px (each page)
-           Desktop: 1024px (each page) / 2560px (each page)
-           ============================================================ */
-        .slide-deck {
-            width: 320px;
-            height: 667px;
-            position: relative;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        /* --- FIXED RESPONSIVE FRAME --- */
+        .frame-container {
+            width: 100%;
+            max-width: 320px; /* Mobile: 320px */
+            min-height: 667px; /* Mobile: 667px min height */
+            background-color: var(--bg-color);
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
             border-radius: 12px;
             overflow: hidden;
-            background: var(--bg-color);
-            transition: width 0.3s, height 0.3s;
+            position: relative;
+            transition: max-width 0.3s ease;
         }
 
-        /* Desktop: 1024px wide, taller height */
+        /* Desktop Small: 1024px */
         @media (min-width: 1024px) {
-            .slide-deck {
-                width: 1024px;
-                height: 700px;
-            }
+            .frame-container { max-width: 1024px; }
         }
 
-        /* Desktop Large: 2560px wide */
+        /* Desktop Large: 2560px */
         @media (min-width: 2560px) {
-            .slide-deck {
-                width: 2560px;
-                height: 900px;
-            }
+            .frame-container { max-width: 2560px; }
         }
 
-        /* ============================================================
-           INDIVIDUAL PAGE / SLIDE
-           ============================================================ */
-        .slide {
-            position: absolute;
-            top: 0; left: 0;
+        .app-content {
             width: 100%;
             height: 100%;
-            padding: 60px 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            text-align: center;
             overflow-y: auto;
-            background: var(--bg-color);
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity 0.5s ease;
+            position: relative;
         }
 
-        .slide.active {
-            opacity: 1;
-            visibility: visible;
-        }
-
-        /* Top Nav (Fixed inside the slide deck) */
+        /* Top Nav */
         .top-nav {
-            position: absolute;
-            top: 0; left: 0; right: 0;
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 18px 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 25px;
             border-bottom: 1px solid var(--border-color);
-            font-size: 0.7rem; letter-spacing: 1.5px; color: var(--text-light);
-            text-transform: uppercase; background: var(--bg-color);
+            font-size: 0.7rem;
+            letter-spacing: 1.5px;
+            color: var(--text-light);
+            text-transform: uppercase;
+            background: var(--bg-color);
+            position: sticky;
+            top: 0;
             z-index: 100;
         }
+
         .logo { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; color: var(--text-dark); letter-spacing: 2px; }
         .nav-center { text-align: center; flex: 1; }
-        .nav-right { display: flex; align-items: center; gap: 15px; }
-        .admin-link { text-decoration: none; color: var(--text-light); font-size: 1rem; opacity: 0.3; transition: opacity 0.3s; }
-        .admin-link:hover { opacity: 1; }
 
-        .slide-inner {
-            width: 100%;
-            max-width: 100%;
-            margin-top: 50px;
+        /* General Section */
+        section {
+            padding: 60px 20px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
             align-items: center;
         }
 
-        /* Typography */
+        section:last-of-type { border-bottom: none; }
+
         .section-subtitle { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-light); margin-bottom: 15px; }
         .section-title { font-family: var(--font-serif); font-size: 2rem; font-weight: 400; margin-bottom: 15px; line-height: 1.2; }
 
@@ -123,181 +105,147 @@
         }
         .btn:hover { background-color: #3d4a40; transform: translateY(-2px); }
 
-        /* Cover */
-        .cover-image-wrapper { width: 100%; max-width: 220px; aspect-ratio: 3/4; border-radius: 110px 110px 15px 15px; overflow: hidden; margin-bottom: 25px; box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+        /* COVER */
+        .cover-section { padding-top: 30px; }
+        .cover-image-wrapper {
+            width: 100%; max-width: 260px; aspect-ratio: 3/4;
+            border-radius: 130px 130px 15px 15px; overflow: hidden;
+            margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.08);
+        }
         .cover-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .cover-title { font-family: var(--font-serif); font-size: 2.2rem; margin-bottom: 8px; line-height: 1.1; }
-        .cover-date { font-size: 0.8rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 25px; }
-        .guest-card { background: var(--card-bg); padding: 15px 25px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px; }
-        .guest-card .small { font-size: 0.65rem; color: var(--text-light); margin-bottom: 3px; }
-        .guest-card .name { font-family: var(--font-serif); font-size: 1rem; }
+        .cover-title { font-family: var(--font-serif); font-size: 2.8rem; margin-bottom: 8px; line-height: 1.1; }
+        .cover-date { font-size: 0.85rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 30px; }
 
-        /* Quote */
-        .quote-text { font-family: var(--font-serif); font-size: 1.1rem; line-height: 1.5; margin: 25px 0; font-style: italic; color: var(--text-dark); }
-        .opening-text { color: var(--text-light); font-size: 0.9rem; }
-        .signature { font-family: var(--font-serif); font-size: 1.4rem; margin-top: 25px; }
+        .guest-card {
+            background: var(--card-bg); padding: 18px 30px; border-radius: 12px;
+            border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px;
+        }
+        .guest-card .small { font-size: 0.7rem; color: var(--text-light); margin-bottom: 3px; }
+        .guest-card .name { font-family: var(--font-serif); font-size: 1.1rem; }
 
-        /* Couple */
-        .couple-grid { display: grid; grid-template-columns: 1fr; gap: 30px; width: 100%; }
+        /* QUOTE */
+        .quote-section { max-width: 100%; margin: 0 auto; }
+        .quote-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; margin: 30px 0; font-style: italic; color: var(--text-dark); }
+        .opening-text { max-width: 100%; margin: 0 auto; color: var(--text-light); font-size: 0.95rem; }
+        .signature { font-family: var(--font-serif); font-size: 1.6rem; margin-top: 30px; }
+
+        /* COUPLE */
+        .couple-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 100%; margin: 30px auto 0; width: 100%; }
         .couple-card { text-align: center; }
-        .couple-img { width: 130px; height: 130px; border-radius: 50%; overflow: hidden; margin: 0 auto 15px; border: 4px solid var(--card-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .couple-img { width: 160px; height: 160px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 5px solid var(--card-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
         .couple-img img { width: 100%; height: 100%; object-fit: cover; }
-        .couple-name { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 5px; }
-        .couple-fullname { font-size: 0.85rem; font-weight: 600; margin-bottom: 8px; }
-        .couple-parents { font-size: 0.75rem; color: var(--text-light); line-height: 1.7; }
-        .couple-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1rem; }
+        .couple-name { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 5px; }
+        .couple-fullname { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
+        .couple-parents { font-size: 0.8rem; color: var(--text-light); line-height: 1.7; }
+        .couple-footer { font-family: var(--font-serif); font-style: italic; margin-top: 40px; font-size: 1.1rem; color: var(--text-dark); }
 
-        /* Event */
-        .date-highlight { font-family: var(--font-serif); font-size: 1.3rem; color: var(--text-dark); margin-bottom: 25px; letter-spacing: 2px; }
-        .event-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; }
-        .event-card { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; }
-        .event-icon { font-size: 1.3rem; margin-bottom: 10px; color: var(--accent-green); }
-        .event-title { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 8px; }
-        .event-time { font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; color: var(--accent-green); }
-        .event-location { font-size: 0.8rem; color: var(--text-light); }
+        /* EVENT */
+        .date-highlight { font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 30px; letter-spacing: 2px; }
+        .event-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 100%; margin: 0 auto; width: 100%; }
+        .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; transition: transform 0.3s ease; }
+        .event-card:hover { transform: translateY(-5px); }
+        .event-icon { font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-green); }
+        .event-title { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 10px; }
+        .event-time { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--accent-green); }
+        .event-location { font-size: 0.85rem; color: var(--text-light); }
 
-        /* Location */
-        .map-wrapper { width: 100%; height: 200px; border-radius: 15px; overflow: hidden; margin: 25px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); border: 1px solid var(--border-color); }
+        /* LOCATION */
+        .map-wrapper { width: 100%; max-width: 100%; height: 250px; border-radius: 15px; overflow: hidden; margin: 30px 0; box-shadow: 0 10px 30px rgba(0,0,0,0.05); position: relative; border: 1px solid var(--border-color); }
         .map-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
-        .location-name { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 8px; }
-        .location-address { color: var(--text-light); font-size: 0.85rem; margin-bottom: 10px; }
-        .location-note { font-size: 0.7rem; color: var(--text-light); margin-top: 12px; }
+        .location-details { max-width: 100%; margin: 0 auto; }
+        .location-name { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 8px; }
+        .location-address { color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px; }
+        .location-note { font-size: 0.75rem; color: var(--text-light); margin-top: 12px; }
 
-        /* Gallery */
-        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 12px; width: 100%; }
-        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; }
+        /* GALLERY */
+        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 100%; margin: 30px auto 0; }
+        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; position: relative; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
         .gallery-item:hover img { transform: scale(1.05); }
-        .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 25px; font-size: 1rem; }
+        .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; color: var(--text-dark); }
 
-        /* Timeline */
-        .timeline { max-width: 100%; margin: 25px auto 0; text-align: left; position: relative; padding-left: 15px; border-left: 2px solid var(--border-color); }
-        .timeline-item { margin-bottom: 25px; position: relative; padding-left: 20px; }
-        .timeline-item::before { content: ''; position: absolute; left: -22px; top: 5px; width: 10px; height: 10px; border-radius: 50%; background-color: var(--accent-green); border: 3px solid var(--bg-color); box-shadow: 0 0 0 2px var(--accent-green); }
-        .timeline-year { font-size: 0.7rem; font-weight: 700; color: var(--accent-green); letter-spacing: 2px; margin-bottom: 3px; }
-        .timeline-title { font-family: var(--font-serif); font-size: 1.1rem; margin-bottom: 4px; }
-        .timeline-desc { font-size: 0.75rem; color: var(--text-light); line-height: 1.6; }
+        /* TIMELINE */
+        .timeline { max-width: 100%; margin: 30px auto 0; text-align: left; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); }
+        .timeline-item { margin-bottom: 30px; position: relative; padding-left: 25px; }
+        .timeline-item::before { content: ''; position: absolute; left: -27px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background-color: var(--accent-green); border: 3px solid var(--bg-color); box-shadow: 0 0 0 2px var(--accent-green); }
+        .timeline-year { font-size: 0.75rem; font-weight: 700; color: var(--accent-green); letter-spacing: 2px; margin-bottom: 3px; }
+        .timeline-title { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 5px; }
+        .timeline-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
 
         /* RSVP */
-        .rsvp-container { display: grid; grid-template-columns: 1fr; gap: 20px; width: 100%; text-align: left; }
-        .rsvp-form { background: var(--card-bg); padding: 20px; border-radius: 15px; border: 1px solid var(--border-color); }
-        .form-group { margin-bottom: 15px; }
-        .form-group label { display: block; font-size: 0.65rem; margin-bottom: 6px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
-        .form-group input, .form-group textarea { width: 100%; padding: 10px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 0.85rem; background: #fafafa; }
-        .form-group textarea { resize: vertical; min-height: 80px; }
-        .radio-group { display: flex; gap: 15px; margin-bottom: 15px; }
-        .radio-group label { display: flex; align-items: center; gap: 5px; font-size: 0.75rem; text-transform: none; letter-spacing: 0; cursor: pointer; font-weight: 400; }
-        .wishes-list { display: flex; flex-direction: column; gap: 12px; max-height: 200px; overflow-y: auto; padding-right: 8px; }
-        .wish-card { background: var(--card-bg); padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); }
-        .wish-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
-        .wish-avatar { width: 30px; height: 30px; border-radius: 50%; background-color: #e6e3db; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent-green); font-size: 0.65rem; text-transform: uppercase; }
-        .wish-name { font-weight: 600; font-size: 0.8rem; }
-        .wish-text { font-size: 0.75rem; color: var(--text-light); line-height: 1.5; }
-        .wish-count { font-size: 0.65rem; color: var(--text-light); margin-bottom: 12px; text-align: left; }
+        .rsvp-container { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 100%; margin: 30px auto 0; text-align: left; width: 100%; }
+        .rsvp-form { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); box-shadow: 0 10px 30px rgba(0,0,0,0.03); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
+        .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 0.9rem; background: #fafafa; transition: border 0.3s; }
+        .form-group input:focus, .form-group textarea:focus { outline: none; border-color: var(--accent-green); }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+        .radio-group { display: flex; gap: 15px; margin-bottom: 20px; }
+        .radio-group label { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; text-transform: none; letter-spacing: 0; cursor: pointer; font-weight: 400; color: var(--text-dark); }
+        .radio-group input[type="radio"] { width: auto; accent-color: var(--accent-green); }
+        .wishes-list { display: flex; flex-direction: column; gap: 15px; max-height: 400px; overflow-y: auto; padding-right: 10px; }
+        .wishes-list::-webkit-scrollbar { width: 5px; }
+        .wishes-list::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+        .wishes-list::-webkit-scrollbar-thumb { background: #c1c1c1; border-radius: 10px; }
+        .wish-card { background: var(--card-bg); padding: 18px; border-radius: 12px; border: 1px solid var(--border-color); }
+        .wish-header { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+        .wish-avatar { width: 35px; height: 35px; border-radius: 50%; background-color: #e6e3db; display: flex; align-items: center; justify-content: center; font-weight: 700; color: var(--accent-green); font-size: 0.7rem; text-transform: uppercase; }
+        .wish-name { font-weight: 600; font-size: 0.85rem; }
+        .wish-text { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
+        .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; width: 100%; max-width: 100%; margin-left: auto; margin-right: auto; }
 
-        /* ============================================================
-           NAVIGATION (Next / Prev)
-           ============================================================ */
-        .nav-controls {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 200;
-            background: rgba(255,255,255,0.9);
-            padding: 8px 16px;
-            border-radius: 40px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            backdrop-filter: blur(10px);
-        }
-        .nav-btn {
-            background: transparent;
-            border: none;
-            font-size: 0.9rem;
-            cursor: pointer;
-            color: var(--text-dark);
-            padding: 6px 12px;
-            border-radius: 20px;
-            transition: background 0.3s;
-            font-family: inherit;
-            font-weight: 500;
-        }
-        .nav-btn:hover { background: var(--accent-green); color: white; }
-        .page-indicator {
-            display: flex;
-            align-items: center;
-            font-size: 0.75rem;
-            color: var(--text-light);
-            padding: 0 10px;
-            font-weight: 600;
-            letter-spacing: 1px;
-        }
-
-        /* ============================================================
-           DESKTOP OVERRIDES (1024px)
-           ============================================================ */
+        /* --- DESKTOP OVERRIDES (1024px+) --- */
         @media (min-width: 1024px) {
-            .top-nav { padding: 22px 50px; font-size: 0.8rem; }
+            .top-nav { padding: 24px 60px; font-size: 0.8rem; }
             .logo { font-size: 1.8rem; }
-            .slide { padding: 80px 60px; }
-            .slide-inner { margin-top: 60px; }
-            .section-title { font-size: 2.8rem; }
-            .cover-image-wrapper { max-width: 380px; border-radius: 190px 190px 20px 20px; }
-            .cover-title { font-size: 4rem; }
-            .guest-card { padding: 22px 50px; }
-            .quote-text { font-size: 1.6rem; }
-            .couple-grid { grid-template-columns: 1fr 1fr; gap: 60px; max-width: 800px; }
-            .couple-img { width: 200px; height: 200px; }
-            .couple-name { font-size: 2rem; }
-            .event-grid { grid-template-columns: 1fr 1fr; gap: 30px; max-width: 800px; }
-            .map-wrapper { height: 350px; max-width: 800px; }
-            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 18px; max-width: 900px; }
-            .timeline { max-width: 700px; padding-left: 25px; }
-            .timeline-item { padding-left: 35px; }
-            .rsvp-container { grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; }
+            section { padding: 80px 60px; }
+            .section-title { font-size: 3rem; }
+            .cover-image-wrapper { max-width: 500px; border-radius: 250px 250px 20px 20px; }
+            .cover-title { font-size: 4.5rem; }
+            .guest-card { padding: 24px 60px; }
+            .quote-text { font-size: 1.8rem; }
+            .couple-grid { grid-template-columns: 1fr 1fr; gap: 80px; max-width: 900px; }
+            .couple-img { width: 220px; height: 220px; }
+            .couple-name { font-size: 2.2rem; }
+            .event-grid { grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; }
+            .map-wrapper { height: 400px; max-width: 900px; }
+            .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 1000px; }
+            .timeline { max-width: 800px; padding-left: 30px; }
+            .timeline-item { padding-left: 40px; }
+            .rsvp-container { grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1000px; }
         }
 
-        /* ============================================================
-           DESKTOP LARGE OVERRIDES (2560px)
-           ============================================================ */
+        /* --- DESKTOP LARGE OVERRIDES (2560px) --- */
         @media (min-width: 2560px) {
-            .top-nav { padding: 30px 100px; }
-            .slide { padding: 120px 120px; }
-            .slide-inner { margin-top: 80px; }
+            .top-nav { padding: 30px 120px; }
+            section { padding: 120px 120px; }
             .section-title { font-size: 4rem; }
-            .cover-image-wrapper { max-width: 550px; }
+            .cover-image-wrapper { max-width: 600px; }
             .cover-title { font-size: 5.5rem; }
-            .quote-text { font-size: 2rem; }
-            .couple-grid { gap: 100px; max-width: 1100px; }
-            .couple-img { width: 260px; height: 260px; }
-            .event-grid { gap: 50px; max-width: 1100px; }
-            .map-wrapper { height: 450px; max-width: 1100px; }
-            .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 25px; max-width: 1500px; }
-            .timeline { max-width: 900px; }
-            .rsvp-container { max-width: 1300px; }
+            .quote-text { font-size: 2.2rem; }
+            .couple-grid { gap: 120px; max-width: 1200px; }
+            .couple-img { width: 280px; height: 280px; }
+            .event-grid { gap: 60px; max-width: 1200px; }
+            .map-wrapper { height: 500px; max-width: 1200px; }
+            .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 30px; max-width: 1600px; }
+            .timeline { max-width: 1000px; }
+            .rsvp-container { max-width: 1400px; }
         }
     </style>
 </head>
 <body>
 
-<div class="slide-deck">
-    <!-- Top Nav -->
-    <header class="top-nav">
-        <div class="logo">L·O</div>
-        <div class="nav-center">Undangan</div>
-        <div class="nav-right">
-            <span>🔊</span>
-            <a href="dashboard.html" class="admin-link" title="Admin Dashboard">⚙</a>
-        </div>
-    </header>
+<div class="frame-container">
+    <div class="app-content">
+        <header class="top-nav">
+            <div class="logo">L·O</div>
+            <div class="nav-center">Undangan</div>
+            <div class="nav-right">🔊</div>
+        </header>
 
-    <!-- ================= SLIDE 1: COVER ================= -->
-    <div class="slide active" data-page="1">
-        <div class="slide-inner">
+        <section class="cover-section">
             <div class="cover-image-wrapper">
-                <img src="bunga_final2.jpeg" alt="Cover">
+                <img src="bunga_final2.jpeg" alt="Lancelot & Odette Cover">
             </div>
             <div class="section-subtitle">Pernikahan</div>
             <h1 class="cover-title">Lancelot & Odette</h1>
@@ -306,25 +254,21 @@
                 <div class="small">Kepada Yth.</div>
                 <div class="name">Bapak Andi & Keluarga</div>
             </div>
-            <button class="btn" onclick="nextSlide()">✉ BUKA UNDANGAN</button>
-        </div>
-    </div>
+            <button class="btn">✉ BUKA UNDANGAN</button>
+        </section>
 
-    <!-- ================= SLIDE 2: TUJUAN ================= -->
-    <div class="slide" data-page="2">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Assalamualaikum Wr. Wb.</div>
             <h2 class="section-title">Dengan penuh syukur</h2>
-            <p class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</p>
-            <div class="section-subtitle" style="margin-bottom: 30px;">AR-RUM · 21</div>
-            <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
-            <p class="signature">Lancelot & Odette</p>
-        </div>
-    </div>
+            <div class="quote-section">
+                <p class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</p>
+                <div class="section-subtitle" style="margin-bottom: 40px;">AR-RUM · 21</div>
+                <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
+                <p class="signature">Lancelot & Odette</p>
+            </div>
+        </section>
 
-    <!-- ================= SLIDE 3: MEMPELAI ================= -->
-    <div class="slide" data-page="3">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Yang Berbahagia</div>
             <h2 class="section-title">Dua hati, satu tujuan</h2>
             <div class="couple-grid">
@@ -342,12 +286,9 @@
                 </div>
             </div>
             <p class="couple-footer">Dengan cinta, kami mengawali babak baru bersama.</p>
-        </div>
-    </div>
+        </section>
 
-    <!-- ================= SLIDE 4: WAKTU ACARA ================= -->
-    <div class="slide" data-page="4">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Save The Date</div>
             <h2 class="section-title">Senin, 12 Oktober 2026</h2>
             <div class="date-highlight">12 OKTOBER 2026</div>
@@ -365,28 +306,24 @@
                     <div class="event-location">Hagia Sophia Grand Mosque, Istanbul</div>
                 </div>
             </div>
-            <button class="btn" style="margin-top: 30px;">📅 SIMPAN TANGGAL</button>
-        </div>
-    </div>
+            <button class="btn" style="margin-top: 40px;">📅 SIMPAN TANGGAL</button>
+        </section>
 
-    <!-- ================= SLIDE 5: LOKASI ================= -->
-    <div class="slide" data-page="5">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Tempat Kami Berjanji</div>
             <h2 class="section-title">Hagia Sophia</h2>
             <div class="map-wrapper">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
-            <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
-            <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
-            <p class="location-note">Parkir tersedia · Akses transportasi umum tersedia</p>
-        </div>
-    </div>
+            <div class="location-details">
+                <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
+                <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
+                <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
+                <p class="location-note">Parkir tersedia di area sekitar · Akses transportasi umum tersedia</p>
+            </div>
+        </section>
 
-    <!-- ================= SLIDE 6: GALERI ================= -->
-    <div class="slide" data-page="6">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Fragmen Kebersamaan</div>
             <h2 class="section-title">Dalam setiap bingkai</h2>
             <div class="gallery-grid">
@@ -396,12 +333,9 @@
                 <div class="gallery-item"><img src="throwing_flower.jpeg" alt="Gallery 4"></div>
             </div>
             <p class="gallery-footer">Kisah kecil yang kami simpan selamanya.</p>
-        </div>
-    </div>
+        </section>
 
-    <!-- ================= SLIDE 7: PERJALANAN ================= -->
-    <div class="slide" data-page="7">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Our Story</div>
             <h2 class="section-title">Tumbuh, lalu menetap</h2>
             <div class="timeline">
@@ -426,19 +360,22 @@
                     <div class="timeline-desc">Kini kami mengundang Anda menjadi bagian dari awal perjalanan baru.</div>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
 
-    <!-- ================= SLIDE 8: UCAPAN ================= -->
-    <div class="slide" data-page="8">
-        <div class="slide-inner">
+        <section>
             <div class="section-subtitle">Titipkan Doa</div>
             <h2 class="section-title">Ucapan untuk kami</h2>
             <div class="wish-count">UCAPAN TERBARU · 24</div>
             <div class="rsvp-container">
                 <div class="rsvp-form">
-                    <div class="form-group"><label>Nama</label><input type="text" placeholder="Nama Anda"></div>
-                    <div class="form-group"><label>Ucapan</label><textarea placeholder="Tuliskan doa dan ucapan hangat..."></textarea></div>
+                    <div class="form-group">
+                        <label>Nama</label>
+                        <input type="text" placeholder="Nama Anda">
+                    </div>
+                    <div class="form-group">
+                        <label>Ucapan</label>
+                        <textarea placeholder="Tuliskan doa dan ucapan hangat..."></textarea>
+                    </div>
                     <div class="form-group">
                         <label>Konfirmasi Kehadiran</label>
                         <div class="radio-group">
@@ -455,56 +392,17 @@
                     </div>
                     <div class="wish-card">
                         <div class="wish-header"><div class="wish-avatar">MA</div><div class="wish-name">Maya</div></div>
-                        <div class="wish-text">Turut berbahagia untuk kedua mempelai. Langgeng sampai tua bersama!</div>
+                        <div class="wish-text">Turut berbahagia untuk Lancelot dan Odette. Langgeng sampai tua bersama!</div>
+                    </div>
+                    <div class="wish-card">
+                        <div class="wish-header"><div class="wish-avatar">BS</div><div class="wish-name">Budi Santoso</div></div>
+                        <div class="wish-text">Barakallahu lakuma wa baraka 'alaikuma wa jama'a bainakuma fii khairin. Selamat menempuh hidup baru!</div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Navigation Controls -->
-    <div class="nav-controls">
-        <button class="nav-btn" onclick="prevSlide()">← Prev</button>
-        <span class="page-indicator" id="pageIndicator">1 / 8</span>
-        <button class="nav-btn" onclick="nextSlide()">Next →</button>
+        </section>
     </div>
 </div>
-
-<script>
-    let currentSlide = 1;
-    const totalSlides = 8;
-
-    function showSlide(n) {
-        const slides = document.querySelectorAll('.slide');
-        slides.forEach(s => s.classList.remove('active'));
-
-        if (n > totalSlides) currentSlide = totalSlides;
-        if (n < 1) currentSlide = 1;
-        if (n >= 1 && n <= totalSlides) currentSlide = n;
-
-        document.querySelector(`.slide[data-page="${currentSlide}"]`).classList.add('active');
-        document.getElementById('pageIndicator').textContent = currentSlide + ' / ' + totalSlides;
-    }
-
-    function nextSlide() { if (currentSlide < totalSlides) showSlide(currentSlide + 1); }
-    function prevSlide() { if (currentSlide > 1) showSlide(currentSlide - 1); }
-
-    // Keyboard navigation
-    document.addEventListener('keydown', function(e) {
-        if (e.key === 'ArrowRight') nextSlide();
-        if (e.key === 'ArrowLeft') prevSlide();
-    });
-
-    // Swipe navigation for mobile
-    let touchStartX = 0;
-    let touchEndX = 0;
-    document.addEventListener('touchstart', e => touchStartX = e.changedTouches[0].screenX);
-    document.addEventListener('touchend', e => {
-        touchEndX = e.changedTouches[0].screenX;
-        if (touchStartX - touchEndX > 50) nextSlide();
-        if (touchEndX - touchStartX > 50) prevSlide();
-    });
-</script>
 
 </body>
 </html>
