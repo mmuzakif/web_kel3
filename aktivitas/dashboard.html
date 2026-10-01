@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Dashboard - Lancelot & Odette</title>
+    <title>Admin Dashboard - Budi & Siti</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -130,7 +130,7 @@
 <div class="login-wrapper" id="loginPage">
     <div class="login-card">
         <h1>Admin Panel</h1>
-        <p>Lancelot & Odette Wedding</p>
+        <p>Budi & Siti Wedding</p>
         <div class="login-error" id="loginError">Username atau password salah!</div>
         <input type="text" id="username" placeholder="Username" value="admin">
         <input type="password" id="password" placeholder="Password" value="admin123">
@@ -167,17 +167,17 @@
                 <div class="stat-card">
                     <div class="icon">👥</div>
                     <h4>Total Tamu</h4>
-                    <div class="number">48</div>
+                    <div class="number">5</div>
                 </div>
                 <div class="stat-card">
                     <div class="icon">✅</div>
                     <h4>Konfirmasi Hadir</h4>
-                    <div class="number">32</div>
+                    <div class="number">3</div>
                 </div>
                 <div class="stat-card">
                     <div class="icon">💬</div>
                     <h4>Ucapan Masuk</h4>
-                    <div class="number">24</div>
+                    <div class="number">3</div>
                 </div>
             </div>
             <div class="form-card">
@@ -193,35 +193,40 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nama Panggilan Pria</label>
-                        <input type="text" id="editGroom" value="Lancelot">
+                        <input type="text" id="editGroom" value="Budi">
                     </div>
                     <div class="form-group">
                         <label>Nama Panggilan Wanita</label>
-                        <input type="text" id="editBride" value="Odette">
+                        <input type="text" id="editBride" value="Siti">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Tanggal Pernikahan</label>
-                        <input type="text" id="editDate" value="12 Oktober 2026">
+                        <input type="text" id="editDate" value="12 Desember 2026">
                     </div>
                     <div class="form-group">
                         <label>Kota</label>
-                        <input type="text" id="editCity" value="Istanbul">
+                        <input type="text" id="editCity" value="Pekanbaru">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Nama Lokasi / Gedung</label>
-                    <input type="text" id="editVenue" value="Hagia Sophia Grand Mosque">
+                    <input type="text" id="editVenue" value="Hotel Pangeran">
                 </div>
                 <div class="form-group">
                     <label>Alamat Lengkap</label>
-                    <textarea rows="3" id="editAddress">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</textarea>
+                    <textarea rows="3" id="editAddress">Jl. Sudirman</textarea>
                 </div>
-                <div class="form-group">
+
+                
+                <div class="form-group" style="display: none;">
                     <label>Kalimat Pembuka (Quote)</label>
                     <textarea rows="3" id="editQuote">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</textarea>
                 </div>
+            
+            
+                
                 <button class="btn-save" onclick="saveLanding()">💾 Simpan Perubahan</button>
                 <button class="btn-cancel" onclick="showSection('home', document.querySelector('.sidebar-menu li'))">Batal</button>
             </div>
@@ -373,9 +378,45 @@
     }
 
     // --- SAVE LANDING ---
-    function saveLanding() {
-        showNotification('✅ Perubahan landing page berhasil disimpan!');
+    let invitationPreview = null;
+
+function openInvitationPreview() {
+    invitationPreview = window.open("undangan.html", "weddingPreview");
+
+    if (!invitationPreview) {
+        showNotification("Allow pop-ups to open the invitation preview.");
     }
+}
+
+function saveLanding() {
+    const data = {
+        groom: document.getElementById("editGroom").value.trim(),
+        bride: document.getElementById("editBride").value.trim(),
+        date: document.getElementById("editDate").value.trim(),
+        city: document.getElementById("editCity").value.trim(),
+        venue: document.getElementById("editVenue").value.trim(),
+        address: document.getElementById("editAddress").value.trim(),
+        quote: document.getElementById("editQuote").value.trim()
+    };
+
+    if (!invitationPreview || invitationPreview.closed) {
+        invitationPreview = window.open("undangan.html", "weddingPreview");
+    }
+
+    if (!invitationPreview) {
+        showNotification("Allow pop-ups to open the invitation preview.");
+        return;
+    }
+
+    setTimeout(() => {
+        invitationPreview.postMessage(
+            { type: "wedding-preview-update", data },
+            "*"
+        );
+    }, 400);
+
+    showNotification("Preview updated temporarily. Reload the invitation to reset it.");
+}
 
     // --- GUEST MANAGEMENT ---
     function addGuest() {

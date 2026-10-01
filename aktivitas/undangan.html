@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lancelot & Odette - Undangan Pernikahan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <title>Budi &amp; Siti - Undangan Pernikahan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #f8f6f1; --text-dark: #2c2c2c; --text-light: #6b6b6b;
@@ -25,12 +25,6 @@
             padding: 20px 0;
         }
 
-        /* ============================================================
-           FIXED SIZE FRAME (scroll page, not slides)
-           Mobile: 320px × 667px (min height)
-           Desktop: 1024px × auto
-           Desktop Large: 2560px × auto
-           ============================================================ */
         .frame-container {
             width: 320px;
             min-height: 667px;
@@ -49,13 +43,8 @@
             .frame-container { width: 2560px; }
         }
 
-        .app-content {
-            width: 100%;
-            height: 100%;
-            position: relative;
-        }
+        .app-content { width: 100%; height: 100%; position: relative; }
 
-        /* Top Nav */
         .top-nav {
             display: flex; justify-content: space-between; align-items: center;
             padding: 20px 25px;
@@ -70,7 +59,6 @@
         .admin-link { text-decoration: none; color: var(--text-light); font-size: 1rem; opacity: 0.3; transition: opacity 0.3s; }
         .admin-link:hover { opacity: 1; }
 
-        /* Sections — all stack vertically */
         section {
             padding: 60px 20px;
             text-align: center;
@@ -91,7 +79,6 @@
         }
         .btn:hover { background-color: #3d4a40; transform: translateY(-2px); }
 
-        /* Cover */
         .cover-section { padding-top: 30px; }
         .cover-image-wrapper { width: 100%; max-width: 260px; aspect-ratio: 3/4; border-radius: 130px 130px 15px 15px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
         .cover-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
@@ -101,12 +88,10 @@
         .guest-card .small { font-size: 0.7rem; color: var(--text-light); margin-bottom: 3px; }
         .guest-card .name { font-family: var(--font-serif); font-size: 1.1rem; }
 
-        /* Quote */
         .quote-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; margin: 30px 0; font-style: italic; color: var(--text-dark); }
         .opening-text { max-width: 100%; margin: 0 auto; color: var(--text-light); font-size: 0.95rem; }
         .signature { font-family: var(--font-serif); font-size: 1.6rem; margin-top: 30px; }
 
-        /* Couple */
         .couple-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 100%; margin: 30px auto 0; width: 100%; }
         .couple-card { text-align: center; }
         .couple-img { width: 160px; height: 160px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 5px solid var(--card-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
@@ -116,7 +101,6 @@
         .couple-parents { font-size: 0.8rem; color: var(--text-light); line-height: 1.7; }
         .couple-footer { font-family: var(--font-serif); font-style: italic; margin-top: 40px; font-size: 1.1rem; color: var(--text-dark); }
 
-        /* Event */
         .date-highlight { font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 30px; letter-spacing: 2px; }
         .event-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 100%; margin: 0 auto; width: 100%; }
         .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; }
@@ -125,20 +109,17 @@
         .event-time { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--accent-green); }
         .event-location { font-size: 0.85rem; color: var(--text-light); }
 
-        /* Location */
         .map-wrapper { width: 100%; max-width: 100%; height: 250px; border-radius: 15px; overflow: hidden; margin: 30px 0; border: 1px solid var(--border-color); }
         .map-wrapper iframe { width: 100%; height: 100%; border: none; display: block; }
         .location-name { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 8px; }
         .location-address { color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px; }
         .location-note { font-size: 0.75rem; color: var(--text-light); margin-top: 12px; }
 
-        /* Gallery */
         .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 100%; margin: 30px auto 0; }
         .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; }
         .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
         .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; }
 
-        /* Timeline */
         .timeline { max-width: 100%; margin: 30px auto 0; text-align: left; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); }
         .timeline-item { margin-bottom: 30px; position: relative; padding-left: 25px; }
         .timeline-item::before { content: ''; position: absolute; left: -27px; top: 5px; width: 12px; height: 12px; border-radius: 50%; background-color: var(--accent-green); border: 3px solid var(--bg-color); box-shadow: 0 0 0 2px var(--accent-green); }
@@ -146,7 +127,6 @@
         .timeline-title { font-family: var(--font-serif); font-size: 1.3rem; margin-bottom: 5px; }
         .timeline-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
 
-        /* RSVP */
         .rsvp-container { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 100%; margin: 30px auto 0; text-align: left; width: 100%; }
         .rsvp-form { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
         .form-group { margin-bottom: 20px; }
@@ -163,9 +143,6 @@
         .wish-text { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
         .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; }
 
-        /* ============================================================
-           DESKTOP OVERRIDES (1024px)
-           ============================================================ */
         @media (min-width: 1024px) {
             .top-nav { padding: 24px 60px; font-size: 0.8rem; }
             .logo { font-size: 1.8rem; }
@@ -186,9 +163,6 @@
             .rsvp-container { grid-template-columns: 1fr 1fr; gap: 50px; max-width: 1000px; }
         }
 
-        /* ============================================================
-           DESKTOP LARGE OVERRIDES (2560px)
-           ============================================================ */
         @media (min-width: 2560px) {
             .top-nav { padding: 30px 120px; }
             section { padding: 120px 120px; }
@@ -207,7 +181,6 @@
     </style>
 </head>
 <body>
-
 <div class="frame-container">
     <div class="app-content">
         <header class="top-nav">
@@ -215,7 +188,7 @@
             <div class="nav-center">Undangan</div>
             <div class="nav-right">
                 <span>🔊</span>
-                <a href="../dashboard.html" class="admin-link" title="Admin Dashboard">⚙</a>
+                <a href="dashboard.html" class="admin-link" title="Admin Dashboard">⚙</a>
             </div>
         </header>
 
@@ -224,11 +197,11 @@
                 <img src="bunga_final2.jpeg" alt="Cover">
             </div>
             <div class="section-subtitle">Pernikahan</div>
-            <h1 class="cover-title">Lancelot & Odette</h1>
-            <div class="cover-date">12 · 10 · 2026 — ISTANBUL</div>
+            <h1 class="cover-title">Budi &amp; Siti</h1>
+            <div class="cover-date">12 · 10 · 2026 — PEKANBARU</div>
             <div class="guest-card">
                 <div class="small">Kepada Yth.</div>
-                <div class="name">Bapak Andi & Keluarga</div>
+                <div class="name">Bapak Andi &amp; Keluarga</div>
             </div>
             <button class="btn">✉ BUKA UNDANGAN</button>
         </section>
@@ -239,7 +212,7 @@
             <div class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</div>
             <div class="section-subtitle" style="margin-bottom: 40px;">AR-RUM · 21</div>
             <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
-            <p class="signature">Lancelot & Odette</p>
+            <p class="signature">Budi &amp; Siti</p>
         </section>
 
         <section>
@@ -247,16 +220,16 @@
             <h2 class="section-title">Dua hati, satu tujuan</h2>
             <div class="couple-grid">
                 <div class="couple-card">
-                    <div class="couple-img"><img src="bunga_final2_riva.jpeg" alt="Odette"></div>
-                    <h3 class="couple-name">Odette</h3>
-                    <div class="couple-fullname">Odette</div>
-                    <div class="couple-parents">Putri pertama Bapak Hadi Santoso & Ibu Ratna Wulandari</div>
+                    <div class="couple-img"><img src="bunga_final2_riva.jpeg" alt="Siti"></div>
+                    <h3 class="couple-name">Siti</h3>
+                    <div class="couple-fullname">Siti</div>
+                    <div class="couple-parents">Putri pertama Bapak Hadi Santoso &amp; Ibu Ratna Wulandari</div>
                 </div>
                 <div class="couple-card">
-                    <div class="couple-img"><img src="bunga_final2_fahrul.jpeg" alt="Lancelot"></div>
-                    <h3 class="couple-name">Lancelot</h3>
-                    <div class="couple-fullname">Lancelot</div>
-                    <div class="couple-parents">Putra kedua Bapak Bimo Adinata & Ibu Larasati</div>
+                    <div class="couple-img"><img src="bunga_final2_fahrul.jpeg" alt="Budi"></div>
+                    <h3 class="couple-name">Budi</h3>
+                    <div class="couple-fullname">Budi</div>
+                    <div class="couple-parents">Putra kedua Bapak Bimo Adinata &amp; Ibu Larasati</div>
                 </div>
             </div>
             <p class="couple-footer">Dengan cinta, kami mengawali babak baru bersama.</p>
@@ -271,13 +244,13 @@
                     <div class="event-icon">⏰</div>
                     <h3 class="event-title">Akad Nikah</h3>
                     <div class="event-time">08.00 — 09.30 WIB</div>
-                    <div class="event-location">Hagia Sophia Grand Mosque, Istanbul</div>
+                    <div class="event-location">Hotel Pangeran Pekanbaru</div>
                 </div>
                 <div class="event-card">
                     <div class="event-icon">🥂</div>
                     <h3 class="event-title">Resepsi</h3>
                     <div class="event-time">11.00 — 14.00 WIB</div>
-                    <div class="event-location">Hagia Sophia Grand Mosque, Istanbul</div>
+                    <div class="event-location">Hotel Pangeran Pekanbaru</div>
                 </div>
             </div>
             <button class="btn" style="margin-top: 40px;">📅 SIMPAN TANGGAL</button>
@@ -285,13 +258,13 @@
 
         <section>
             <div class="section-subtitle">Tempat Kami Berjanji</div>
-            <h2 class="section-title">Hagia Sophia</h2>
+            <h2 class="section-title">Hotel Pangeran Pekanbaru</h2>
             <div class="map-wrapper">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3010.716778334965!2d28.97734631541209!3d41.00858317930173!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x14cab9be9c5599d1%3A0x6b6c6a2c6b6b6b6b!2sHagia%20Sophia!5e0!3m2!1sen!2sid!4v1600000000000!5m2!1sen!2sid" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://www.google.com/maps?q=Hotel+Pangeran+Pekanbaru,+Jl.+Jend.+Sudirman+No.+371-373,+Pekanbaru,+Riau&amp;output=embed" allowfullscreen="" loading="lazy"></iframe>
             </div>
-            <h3 class="location-name">Hagia Sophia Grand Mosque</h3>
-            <p class="location-address">Sultan Ahmet, Ayasofya Meydanı No:1, 34122 Fatih/İstanbul, Türkiye</p>
-            <a href="https://www.google.com/maps/dir/?api=1&destination=Hagia+Sophia+Istanbul" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
+            <h3 class="location-name">Hotel Pangeran Pekanbaru</h3>
+            <p class="location-address">Jl. Jend. Sudirman No. 371–373, Cinta Raja, Kec. Sail, Kota Pekanbaru, Riau 28126, Indonesia</p>
+            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Pangeran+Pekanbaru%2C+Jl.+Jend.+Sudirman+No.+371-373%2C+Pekanbaru%2C+Riau" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
             <p class="location-note">Parkir tersedia · Akses transportasi umum tersedia</p>
         </section>
 
@@ -317,14 +290,14 @@
                     <div class="timeline-desc">Berawal dari secangkir kopi dan percakapan yang terasa terlalu singkat.</div>
                 </div>
                 <div class="timeline-item">
-                    <div class="timeline-year">2022</div>
+                    <div class="timeline-year">2020-2024</div>
                     <div class="timeline-title">Menumbuhkan cerita</div>
-                    <div class="timeline-desc">Kami belajar pulang, bertumbuh, dan merayakan hal-hal sederhana bersama.</div>
+                    <div class="timeline-desc">Kami bertumbuh belajar bersama menghadapi kehidupan dan rintangan, ups and downs namun selalu tetap bersama .</div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-year">2025</div>
                     <div class="timeline-title">Satu keputusan</div>
-                    <div class="timeline-desc">Di bawah langit sore Kaliurang, kami memilih selamanya.</div>
+                    <div class="timeline-desc">Di bawah langit sore dan kkeheningan kota, kami memilih untuk bersama selamanya.</div>
                 </div>
                 <div class="timeline-item">
                     <div class="timeline-year">2026</div>
@@ -337,7 +310,7 @@
         <section>
             <div class="section-subtitle">Titipkan Doa</div>
             <h2 class="section-title">Ucapan untuk kami</h2>
-            <div class="wish-count">UCAPAN TERBARU · 24</div>
+            <div class="wish-count">UCAPAN TERBARU</div>
             <div class="rsvp-container">
                 <div class="rsvp-form">
                     <div class="form-group"><label>Nama</label><input type="text" placeholder="Nama Anda"></div>
@@ -353,7 +326,7 @@
                 </div>
                 <div class="wishes-list">
                     <div class="wish-card">
-                        <div class="wish-header"><div class="wish-avatar">DN</div><div class="wish-name">Dinda & Naufal</div></div>
+                        <div class="wish-header"><div class="wish-avatar">DN</div><div class="wish-name">Dinda &amp; Naufal</div></div>
                         <div class="wish-text">Selamat menempuh hidup baru. Semoga selalu dilimpahi bahagia dan keberkahan.</div>
                     </div>
                     <div class="wish-card">
@@ -369,6 +342,60 @@
         </section>
     </div>
 </div>
+<script>
+    window.addEventListener("message", function (event) {
+        if (
+            event.source !== window.opener ||
+            !event.data ||
+            event.data.type !== "wedding-preview-update"
+        ) {
+            return;
+        }
 
+        const data = event.data.data;
+        const coupleNames = document.querySelectorAll(".couple-name");
+        const fullNames = document.querySelectorAll(".couple-fullname");
+        const eventSection = document.querySelector(".event-grid").closest("section");
+        eventSection.querySelector(".section-title").textContent = data.date;
+        eventSection.querySelector(".date-highlight").textContent = data.date.toUpperCase();
+
+        document.querySelector(".cover-title").textContent =
+            `${data.groom} & ${data.bride}`;
+
+        document.querySelector(".cover-date").textContent =
+            `${data.date} — ${data.city.toUpperCase()}`;
+
+        document.querySelector(".quote-text").textContent = data.quote;
+
+        document.querySelectorAll(".event-location").forEach(element => {
+            element.textContent = data.venue;
+        });
+
+        document.querySelector(".location-name").textContent = data.venue;
+        document.querySelector(".location-address").textContent = data.address;
+
+        if (coupleNames.length >= 2) {
+            coupleNames[0].textContent = data.bride;
+            coupleNames[1].textContent = data.groom;
+        }
+
+        if (fullNames.length >= 2) {
+            fullNames[0].textContent = data.bride;
+            fullNames[1].textContent = data.groom;
+        }
+
+        const query = encodeURIComponent(`${data.venue}, ${data.address}`);
+
+        document.querySelector(".map-wrapper iframe").src =
+            `https://www.google.com/maps?q=${query}&output=embed`;
+
+        const directionsLink = document
+            .querySelector(".location-name")
+            .parentElement.querySelector("a.btn");
+
+        directionsLink.href =
+            `https://www.google.com/maps/dir/?api=1&destination=${query}`;
+    });
+</script>
 </body>
 </html>
