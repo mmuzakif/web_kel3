@@ -8,10 +8,60 @@ $stmt = $pdo->prepare(
 );
 $stmt->execute([1]);
 $ucapanList = $stmt->fetchAll();
+$galleryList = $pdo->query('SELECT id, foto_path, alt_text FROM gallery_foto ORDER BY sort_order ASC, id ASC')->fetchAll();
 
 $flash = $_SESSION['flash'] ?? '';
 unset($_SESSION['flash']);
 $acara = $pdo->query('SELECT * FROM acara WHERE id = 1')->fetch();
+if (!$acara) {
+    http_response_code(404);
+    exit('Data acara belum ada. Periksa tabel acara di phpMyAdmin.');
+}
+
+$fotoSampul = trim((string) ($acara['foto_sampul'] ?? ''));
+$fotoPria = trim((string) ($acara['foto_pria'] ?? ''));
+$fotoWanita = trim((string) ($acara['foto_wanita'] ?? ''));
+$musikFile = trim((string) ($acara['musik_file'] ?? ''));
+if (!preg_match('#^uploads/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $fotoSampul)) $fotoSampul = 'bunga_final2.jpeg';
+if (!preg_match('#^uploads/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $fotoPria)) $fotoPria = 'bunga_final2_fahrul.jpeg';
+if (!preg_match('#^uploads/[a-f0-9]{32}\.(?:jpg|png|webp)$#', $fotoWanita)) $fotoWanita = 'bunga_final2_riva.jpeg';
+if (!preg_match('#^uploads/[a-f0-9]{32}\.(?:mp3|ogg|wav|m4a)$#', $musikFile)) $musikFile = '';
+
+$namaPria = trim((string) ($acara['nama_pria'] ?? ''));
+$namaWanita = trim((string) ($acara['nama_wanita'] ?? ''));
+if ($namaPria === '' && $namaWanita === '') {
+    $namaParts = preg_split('/\s+(?:&|dan|and)\s+/iu', trim((string) $acara['mempelai']), 2);
+    $namaPria = trim($namaParts[0] ?? '');
+    $namaWanita = trim($namaParts[1] ?? '');
+}
+$pasangan = $namaPria !== '' && $namaWanita !== '' ? "$namaPria & $namaWanita" : $acara['mempelai'];
+$namaTamu = isset($_GET['to']) && is_string($_GET['to']) ? trim(substr($_GET['to'], 0, 150)) : '';
+$kutipan = trim((string) ($acara['kutipan'] ?? '')) ?: 'Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya.';
+$kota = trim((string) ($acara['kota'] ?? ''));
+$mapQuery = urlencode($acara['lokasi'] . ', ' . $acara['alamat']);
+$mapEmbedUrl = $acara['map_url'] ?: "https://www.google.com/maps?q=$mapQuery&output=embed";
+$mapDirectionsUrl = "https://www.google.com/maps/dir/?api=1&destination=$mapQuery";
+$keluargaPria = [];
+$keluargaWanita = [];
+foreach ([
+    'pria' => ['nama' => 'ayah_pria', 'ibu' => 'ibu_pria', 'keterangan' => 'keterangan_pria'],
+    'wanita' => ['nama' => 'ayah_wanita', 'ibu' => 'ibu_wanita', 'keterangan' => 'keterangan_wanita'],
+] as $gender => $fields) {
+    $parents = [];
+    $father = trim((string) ($acara[$fields['nama']] ?? ''));
+    $mother = trim((string) ($acara[$fields['ibu']] ?? ''));
+    if ($father !== '') $parents[] = 'Bapak ' . $father;
+    if ($mother !== '') $parents[] = 'Ibu ' . $mother;
+    $description = [];
+    $birthOrder = trim((string) ($acara[$fields['keterangan']] ?? ''));
+    if ($birthOrder !== '') $description[] = $birthOrder;
+    if ($parents) $description[] = 'dari ' . implode(' & ', $parents);
+    if ($gender === 'pria') $keluargaPria = $description;
+    else $keluargaWanita = $description;
+}
+$deskripsiKeluargaPria = implode(' ', $keluargaPria);
+$deskripsiKeluargaWanita = implode(' ', $keluargaWanita);
+
 $bulanIndonesia = [
     1 => 'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
     'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
@@ -37,16 +87,13 @@ $tanggalHighlight = strtoupper(
     . ' ' . date('Y', $timestampTanggal)
 );
 
-if (!$acara) {
-    exit('Data acara belum ada. Periksa tabel acara di phpMyAdmin.');
-}
 ?>
 <!DOCTYPE html>
 <html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Budi &amp; Siti - Undangan Pernikahan</title>
+    <title><?= e($pasangan) ?> - Undangan Pernikahan</title>
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&amp;family=Plus+Jakarta+Sans:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
     <style>
         :root {
@@ -56,41 +103,40 @@ if (!$acara) {
         }
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        html, body {
-            background-color: #e8e5de;
+        html { min-height: 100%; scroll-behavior: smooth; }
+        body {
+            background: radial-gradient(ellipse at 12% 4%, #e8eadd 0, transparent 30%), #eeece5;
             font-family: var(--font-sans);
             color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
+            width: 100%;
+            margin: 0;
             display: flex;
             justify-content: center;
             align-items: flex-start;
-            padding: 20px 0;
+            padding: clamp(10px, 2.5vw, 24px) 0;
         }
 
         .frame-container {
-            width: 320px;
+            width: min(100%, 1120px);
             min-height: 667px;
             height: auto;
             background-color: var(--bg-color);
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-            border-radius: 12px;
+            box-shadow: 0 18px 55px rgba(40,47,40,0.12);
+            border: 1px solid rgba(79,94,83,.12);
+            border-radius: 16px;
             overflow: hidden;
             position: relative;
+            animation: invitation-arrive .7s cubic-bezier(.2,.7,.2,1) both;
         }
-
-        @media (min-width: 1024px) {
-            .frame-container { width: 1024px; }
-        }
-        @media (min-width: 2560px) {
-            .frame-container { width: 2560px; }
-        }
+        @keyframes invitation-arrive { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
 
         .app-content { width: 100%; height: 100%; position: relative; }
 
         .top-nav {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 25px;
+            padding: clamp(16px, 2.2vw, 24px) clamp(20px, 5vw, 60px);
             border-bottom: 1px solid var(--border-color);
             font-size: 0.7rem; letter-spacing: 1.5px; color: var(--text-light);
             text-transform: uppercase; background: var(--bg-color);
@@ -99,19 +145,27 @@ if (!$acara) {
         .logo { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; color: var(--text-dark); letter-spacing: 2px; }
         .nav-center { text-align: center; flex: 1; }
         .nav-right { display: flex; align-items: center; gap: 15px; }
+        .cover-return { display: inline-flex; align-items: center; gap: 5px; padding: 7px 10px; border: 1px solid var(--border-color); border-radius: 999px; color: var(--text-light); background: rgba(255,255,255,.7); font: 500 .7rem var(--font-sans); cursor: pointer; }
+        .cover-return[hidden] { display: none; }
+        .cover-return:hover { background: #e9ecdf; color: var(--accent-green); }
+        .music-control { display: inline-flex; align-items: center; gap: 6px; padding: 8px 11px; border: 1px solid var(--border-color); border-radius: 999px; color: var(--accent-green); background: rgba(255,255,255,.7); font: 500 .72rem var(--font-sans); cursor: pointer; }
+        .music-control:hover:not(:disabled) { background: #e9ecdf; }
+        .music-control:disabled { opacity: .55; cursor: not-allowed; }
         .admin-link { text-decoration: none; color: var(--text-light); font-size: 1rem; opacity: 0.3; transition: opacity 0.3s; }
         .admin-link:hover { opacity: 1; }
 
         section {
-            padding: 60px 20px;
+            position: relative;
+            padding: clamp(58px, 7vw, 92px) clamp(22px, 6vw, 74px);
             text-align: center;
             border-bottom: 1px solid var(--border-color);
             display: flex; flex-direction: column; align-items: center;
         }
         section:last-of-type { border-bottom: none; }
 
-        .section-subtitle { font-size: 0.65rem; letter-spacing: 2.5px; text-transform: uppercase; color: var(--text-light); margin-bottom: 15px; }
-        .section-title { font-family: var(--font-serif); font-size: 2rem; font-weight: 400; margin-bottom: 15px; line-height: 1.2; }
+        .section-subtitle { font-size: .68rem; letter-spacing: 2.8px; text-transform: uppercase; color: var(--text-light); margin-bottom: 14px; }
+        .section-title { font-family: var(--font-serif); font-size: clamp(2rem, 4.4vw, 3.2rem); font-weight: 400; margin-bottom: 18px; line-height: 1.16; }
+        .section-title::after { display: block; margin-top: 13px; color: #899481; content: '❧  ✧  ❧'; font: 400 .85rem 'Playfair Display', serif; letter-spacing: 5px; }
 
         .btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 10px;
@@ -122,22 +176,25 @@ if (!$acara) {
         }
         .btn:hover { background-color: #3d4a40; transform: translateY(-2px); }
 
-        .cover-section { padding-top: 30px; }
-        .cover-image-wrapper { width: 100%; max-width: 260px; aspect-ratio: 3/4; border-radius: 130px 130px 15px 15px; overflow: hidden; margin-bottom: 30px; box-shadow: 0 15px 30px rgba(0,0,0,0.08); }
+        .cover-section { padding-top: clamp(44px, 7vw, 76px); }
+        .cover-section::before { margin-bottom: 22px; color: #899481; content: '✧  ❧  ✧'; font: 1rem 'Playfair Display', serif; letter-spacing: 5px; }
+        .cover-sprig { position: absolute; top: 16%; right: 7%; width: clamp(56px, 9vw, 100px); color: #81907d; opacity: .32; pointer-events: none; }
+        .cover-sprig.left { top: auto; right: auto; bottom: 12%; left: 7%; transform: rotate(180deg); }
+        .cover-image-wrapper { width: min(68%, 330px); aspect-ratio: 3/4; border: 5px solid rgba(255,255,255,.8); border-radius: 180px 180px 16px 16px; overflow: hidden; margin-bottom: 32px; box-shadow: 0 16px 36px rgba(0,0,0,0.1); }
         .cover-image-wrapper img { width: 100%; height: 100%; object-fit: cover; }
-        .cover-title { font-family: var(--font-serif); font-size: 2.8rem; margin-bottom: 8px; line-height: 1.1; }
-        .cover-date { font-size: 0.85rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 30px; }
-        .guest-card { background: var(--card-bg); padding: 18px 30px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px; }
+        .cover-title { font-family: var(--font-serif); font-size: clamp(2.5rem, 7vw, 4.8rem); font-weight: 500; margin-bottom: 10px; line-height: 1.08; color: #354239; }
+        .cover-date { font-size: .78rem; color: var(--text-light); letter-spacing: 2px; margin-bottom: 26px; text-transform: uppercase; }
+        .guest-card { background: rgba(255,255,255,.72); padding: 17px 30px; border-radius: 12px; border: 1px solid var(--border-color); display: inline-block; text-align: center; margin-bottom: 10px; }
         .guest-card .small { font-size: 0.7rem; color: var(--text-light); margin-bottom: 3px; }
         .guest-card .name { font-family: var(--font-serif); font-size: 1.1rem; }
 
-        .quote-text { font-family: var(--font-serif); font-size: 1.3rem; line-height: 1.5; margin: 30px 0; font-style: italic; color: var(--text-dark); }
-        .opening-text { max-width: 100%; margin: 0 auto; color: var(--text-light); font-size: 0.95rem; }
-        .signature { font-family: var(--font-serif); font-size: 1.6rem; margin-top: 30px; }
+        .quote-text { max-width: 760px; font-family: var(--font-serif); font-size: clamp(1.25rem, 2.7vw, 1.85rem); line-height: 1.7; margin: 22px 0; font-style: italic; color: var(--text-dark); }
+        .opening-text { max-width: 680px; margin: 0 auto; color: var(--text-light); font-size: .94rem; line-height: 1.9; }
+        .signature { font-family: var(--font-serif); font-size: clamp(1.5rem, 3vw, 2rem); margin-top: 28px; color: #354239; }
 
         .couple-grid { display: grid; grid-template-columns: 1fr; gap: 40px; max-width: 100%; margin: 30px auto 0; width: 100%; }
         .couple-card { text-align: center; }
-        .couple-img { width: 160px; height: 160px; border-radius: 50%; overflow: hidden; margin: 0 auto 20px; border: 5px solid var(--card-bg); box-shadow: 0 8px 20px rgba(0,0,0,0.06); }
+        .couple-img { width: 80px; height: 80px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 3px solid var(--card-bg); box-shadow: 0 6px 16px rgba(0,0,0,0.07); }
         .couple-img img { width: 100%; height: 100%; object-fit: cover; }
         .couple-name { font-family: var(--font-serif); font-size: 1.8rem; margin-bottom: 5px; }
         .couple-fullname { font-size: 0.9rem; font-weight: 600; margin-bottom: 10px; }
@@ -146,7 +203,7 @@ if (!$acara) {
 
         .date-highlight { font-family: var(--font-serif); font-size: 1.5rem; color: var(--text-dark); margin-bottom: 30px; letter-spacing: 2px; }
         .event-grid { display: grid; grid-template-columns: 1fr; gap: 20px; max-width: 100%; margin: 0 auto; width: 100%; }
-        .event-card { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); text-align: left; }
+        .event-card { background: rgba(255,255,255,.72); padding: clamp(24px, 4vw, 38px); border-radius: 16px; border: 1px solid var(--border-color); text-align: left; box-shadow: 0 8px 24px rgba(40,47,40,.04); }
         .event-icon { font-size: 1.5rem; margin-bottom: 15px; color: var(--accent-green); }
         .event-title { font-family: var(--font-serif); font-size: 1.5rem; margin-bottom: 10px; }
         .event-time { font-weight: 600; font-size: 0.95rem; margin-bottom: 5px; color: var(--accent-green); }
@@ -158,9 +215,11 @@ if (!$acara) {
         .location-address { color: var(--text-light); font-size: 0.9rem; margin-bottom: 10px; }
         .location-note { font-size: 0.75rem; color: var(--text-light); margin-top: 12px; }
 
-        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 15px; width: 100%; max-width: 100%; margin: 30px auto 0; }
-        .gallery-item { border-radius: 12px; overflow: hidden; aspect-ratio: 4/3; background-color: #ddd; }
-        .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+        .gallery-grid { display: grid; grid-template-columns: 1fr; gap: 18px; width: 100%; max-width: 100%; margin: 30px auto 0; overflow: visible; }
+        .gallery-item { position: relative; border: 1px solid rgba(79,94,83,.12); border-radius: 14px; overflow: hidden; aspect-ratio: 4/3; background-color: #e8eadd; box-shadow: 0 5px 15px rgba(40,47,40,.06); transition: transform .35s cubic-bezier(.2,.7,.2,1), box-shadow .35s ease; }
+        .gallery-item img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .55s cubic-bezier(.2,.7,.2,1), filter .35s ease; }
+        .gallery-item:hover { z-index: 1; transform: translateY(-5px) scale(1.02); box-shadow: 0 18px 32px rgba(40,47,40,.18); }
+        .gallery-item:hover img { transform: scale(1.055); filter: saturate(1.05); }
         .gallery-footer { font-family: var(--font-serif); font-style: italic; margin-top: 30px; font-size: 1.1rem; }
 
         .timeline { max-width: 100%; margin: 30px auto 0; text-align: left; position: relative; padding-left: 20px; border-left: 2px solid var(--border-color); }
@@ -171,7 +230,7 @@ if (!$acara) {
         .timeline-desc { font-size: 0.85rem; color: var(--text-light); line-height: 1.6; }
 
         .rsvp-container { display: grid; grid-template-columns: 1fr; gap: 30px; max-width: 100%; margin: 30px auto 0; text-align: left; width: 100%; }
-        .rsvp-form { background: var(--card-bg); padding: 25px; border-radius: 15px; border: 1px solid var(--border-color); }
+        .rsvp-form { background: rgba(255,255,255,.8); padding: clamp(22px, 4vw, 34px); border-radius: 16px; border: 1px solid var(--border-color); box-shadow: 0 8px 24px rgba(40,47,40,.04); }
         .form-group { margin-bottom: 20px; }
         .form-group label { display: block; font-size: 0.7rem; margin-bottom: 8px; color: var(--text-light); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 600; }
         .form-group input, .form-group textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 8px; font-family: var(--font-sans); font-size: 0.9rem; background: #fafafa; }
@@ -186,18 +245,10 @@ if (!$acara) {
         .wish-text { font-size: 0.8rem; color: var(--text-light); line-height: 1.6; }
         .wish-count { font-size: 0.7rem; color: var(--text-light); margin-bottom: 15px; text-align: left; }
 
-        @media (min-width: 1024px) {
-            .top-nav { padding: 24px 60px; font-size: 0.8rem; }
-            .logo { font-size: 1.8rem; }
-            section { padding: 80px 60px; }
-            .section-title { font-size: 3rem; }
-            .cover-image-wrapper { max-width: 500px; border-radius: 250px 250px 20px 20px; }
-            .cover-title { font-size: 4.5rem; }
-            .guest-card { padding: 24px 60px; }
-            .quote-text { font-size: 1.8rem; }
+        @media (min-width: 760px) {
+            .logo { font-size: 1.7rem; }
             .couple-grid { grid-template-columns: 1fr 1fr; gap: 80px; max-width: 900px; }
-            .couple-img { width: 220px; height: 220px; }
-            .couple-name { font-size: 2.2rem; }
+            .couple-img { width: 105px; height: 105px; }
             .event-grid { grid-template-columns: 1fr 1fr; gap: 40px; max-width: 900px; }
             .map-wrapper { height: 400px; max-width: 900px; }
             .gallery-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; max-width: 1000px; }
@@ -206,20 +257,23 @@ if (!$acara) {
             .rsvp-container { grid-template-columns: 1fr; gap: 30px; max-width: 1000px; }
         }
 
-        @media (min-width: 2560px) {
-            .top-nav { padding: 30px 120px; }
-            section { padding: 120px 120px; }
-            .section-title { font-size: 4rem; }
-            .cover-image-wrapper { max-width: 600px; }
-            .cover-title { font-size: 5.5rem; }
-            .quote-text { font-size: 2.2rem; }
-            .couple-grid { gap: 120px; max-width: 1200px; }
-            .couple-img { width: 280px; height: 280px; }
-            .event-grid { gap: 60px; max-width: 1200px; }
-            .map-wrapper { height: 500px; max-width: 1200px; }
-            .gallery-grid { grid-template-columns: repeat(4, 1fr); gap: 30px; max-width: 1600px; }
-            .timeline { max-width: 1000px; }
-            .rsvp-container { max-width: 1400px; }
+        .reveal-section { transition: opacity .7s ease, transform .7s cubic-bezier(.2,.7,.2,1); }
+        @media (max-width: 420px) {
+            body { padding: 0; }
+            .frame-container { border-radius: 0; border-left: 0; border-right: 0; }
+            .top-nav { padding: 15px 18px; }
+            section { padding: 54px 20px; }
+            .cover-image-wrapper { width: min(78%, 260px); }
+            .cover-sprig { opacity: .2; }
+            .rsvp-form { padding: 20px 16px; }
+        }
+        body.reveal-ready .reveal-section { opacity: 0; transform: translateY(18px); }
+        body.reveal-ready .reveal-section.is-visible { opacity: 1; transform: translateY(0); }
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            .frame-container, .reveal-section { animation: none; transition: none; opacity: 1 !important; transform: none !important; }
+            .gallery-item, .gallery-item img { transition: none; }
+            .gallery-item:hover, .gallery-item:hover img { transform: none; }
         }
     </style>
 </head>
@@ -230,21 +284,36 @@ if (!$acara) {
             <div class="logo">L·O</div>
             <div class="nav-center">Undangan</div>
             <div class="nav-right">
-                <span>🔊</span>
-                <a href="dashboard.html" class="admin-link" title="Admin Dashboard">⚙</a>
+                <button class="cover-return" id="coverReturn" type="button" hidden>← Sampul</button>
+                <button class="music-control" id="mainMusicToggle" type="button" aria-label="Putar musik" aria-pressed="false" <?= $musikFile === '' ? 'disabled title="Unggah lagu melalui dashboard terlebih dahulu"' : '' ?>>
+                    <span aria-hidden="true">♫</span><span id="mainMusicLabel"><?= $musikFile === '' ? 'Musik belum tersedia' : 'Putar musik' ?></span>
+                </button>
+                <a href="dashboard.html" target="_blank" rel="noopener" class="admin-link" title="Admin Dashboard">⚙</a>
             </div>
         </header>
 
         <section class="cover-section">
+            <svg class="cover-sprig" viewBox="0 0 100 130" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 121C26 96 42 76 53 54C64 34 77 19 92 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M27 96C11 93 5 82 8 69C22 70 31 79 27 96Z" stroke="currentColor" stroke-width="1.1"/>
+                <path d="M46 67C41 52 47 42 60 38C64 51 58 62 46 67Z" stroke="currentColor" stroke-width="1.1"/>
+                <path d="M66 37C64 24 71 16 83 13C86 25 79 34 66 37Z" stroke="currentColor" stroke-width="1.1"/>
+            </svg>
+            <svg class="cover-sprig left" viewBox="0 0 100 130" fill="none" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
+                <path d="M9 121C26 96 42 76 53 54C64 34 77 19 92 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+                <path d="M27 96C11 93 5 82 8 69C22 70 31 79 27 96Z" stroke="currentColor" stroke-width="1.1"/>
+                <path d="M46 67C41 52 47 42 60 38C64 51 58 62 46 67Z" stroke="currentColor" stroke-width="1.1"/>
+                <path d="M66 37C64 24 71 16 83 13C86 25 79 34 66 37Z" stroke="currentColor" stroke-width="1.1"/>
+            </svg>
             <div class="cover-image-wrapper">
-                <img src="bunga_final2.jpeg" alt="Cover">
+                <img src="<?= e($fotoSampul) ?>" alt="Foto sampul undangan">
             </div>
             <div class="section-subtitle">Pernikahan</div>
-           <h1 class="cover-title"><?= e($acara['mempelai']) ?></h1>
-             <?= e($tanggalPendek) ?>
+           <h1 class="cover-title"><?= e($pasangan) ?></h1>
+           <div class="cover-date"><?= e($tanggalPendek . ($kota !== '' ? ' — ' . strtoupper($kota) : '')) ?></div>
             <div class="guest-card">
                 <div class="small">Kepada Yth.</div>
-                <div class="name">Bapak Andi &amp; Keluarga</div>
+                <div class="name"><?= e($namaTamu !== '' ? $namaTamu : 'Bapak/Ibu/Saudara/i') ?></div>
             </div>
             <!-- <button class="btn">✉ BUKA UNDANGAN</button> -->
         </section>
@@ -252,10 +321,10 @@ if (!$acara) {
         <section>
             <div class="section-subtitle">Assalamualaikum Wr. Wb.</div>
             <h2 class="section-title">Dengan penuh syukur</h2>
-            <div class="quote-text">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</div>
+            <div class="quote-text">"<?= e($kutipan) ?>"</div>
             <div class="section-subtitle" style="margin-bottom: 40px;">AR-RUM · 21</div>
             <p class="opening-text">Dengan memohon rahmat dan ridho Allah SWT, kami bermaksud mengundang Bapak/Ibu/Saudara/i untuk hadir dan memberikan doa restu pada hari bahagia kami.</p>
-          <p class="signature"><?= e($acara['mempelai']) ?></p>
+          <p class="signature"><?= e($pasangan) ?></p>
         </section>
 
         <section>
@@ -263,16 +332,20 @@ if (!$acara) {
             <h2 class="section-title">Dua hati, satu tujuan</h2>
             <div class="couple-grid">
                 <div class="couple-card">
-                    <div class="couple-img"><img src="bunga_final2_riva.jpeg" alt="Siti"></div>
-                    <h3 class="couple-name">Siti</h3>
-                    <div class="couple-fullname">Siti</div>
-                    <div class="couple-parents">Putri pertama Bapak Hadi Santoso &amp; Ibu Ratna Wulandari</div>
+                    <div class="couple-img"><img src="<?= e($fotoWanita) ?>" alt="<?= e($namaWanita ?: 'Mempelai wanita') ?>"></div>
+                    <h3 class="couple-name"><?= e($namaWanita ?: $pasangan) ?></h3>
+                    <div class="couple-fullname"><?= e($namaWanita ?: $pasangan) ?></div>
+                    <?php if ($deskripsiKeluargaWanita !== ''): ?>
+                        <div class="couple-parents"><?= e($deskripsiKeluargaWanita) ?></div>
+                    <?php endif; ?>
                 </div>
                 <div class="couple-card">
-                    <div class="couple-img"><img src="bunga_final2_fahrul.jpeg" alt="Budi"></div>
-                    <h3 class="couple-name">Budi</h3>
-                    <div class="couple-fullname">Budi</div>
-                    <div class="couple-parents">Putra kedua Bapak Bimo Adinata &amp; Ibu Larasati</div>
+                    <div class="couple-img"><img src="<?= e($fotoPria) ?>" alt="<?= e($namaPria ?: 'Mempelai pria') ?>"></div>
+                    <h3 class="couple-name"><?= e($namaPria ?: $pasangan) ?></h3>
+                    <div class="couple-fullname"><?= e($namaPria ?: $pasangan) ?></div>
+                    <?php if ($deskripsiKeluargaPria !== ''): ?>
+                        <div class="couple-parents"><?= e($deskripsiKeluargaPria) ?></div>
+                    <?php endif; ?>
                 </div>
             </div>
             <p class="couple-footer">Dengan cinta, we start our journey together, once and forever.</p>
@@ -280,8 +353,8 @@ if (!$acara) {
 
         <section>
             <div class="section-subtitle">Save The Date</div>
-             <?= e($tanggalLengkap) ?>
-             <?= e($tanggalHighlight) ?>
+            <div class="date-highlight"><?= e($tanggalHighlight) ?></div>
+            <div class="section-subtitle"><?= e($tanggalLengkap) ?><?= $kota !== '' ? ' · ' . e($kota) : '' ?></div>
             <div class="event-grid">
                 <div class="event-card">
                     <div class="event-icon">⏰</div>
@@ -299,7 +372,7 @@ if (!$acara) {
                        <?= e(date('H.i', strtotime($acara['waktu_resepsi_mulai']))) ?> —
                         <?= e(date('H.i', strtotime($acara['waktu_resepsi_selesai']))) ?> WIB
                     </div>
-                    <div class="event-location">Hotel Pangeran Pekanbaru</div>
+                    <div class="event-location"><?= e($acara['lokasi']) ?></div>
                 </div>
             </div>
             <button class="btn" style="margin-top: 40px;">📅 SIMPAN TANGGAL</button>
@@ -307,13 +380,13 @@ if (!$acara) {
 
         <section>
             <div class="section-subtitle">Tempat Kami Menunaikan janji suci</div>
-            <h2 class="section-title">Hotel Pangeran Pekanbaru</h2>
+            <h2 class="section-title"><?= e($acara['lokasi']) ?></h2>
             <div class="map-wrapper">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3329.9144195974427!2d101.45047277403701!3d0.5048245637111075!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31d5aebce81ef37f%3A0x9b837fcba8f106e9!2sHotel%20Pangeran!5e1!3m2!1sen!2sus!4v1791464160985!5m2!1sen!2sus" width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="strict-origin-when-cross-origin=<?= urlencode($acara['lokasi'] . ', ' . $acara['alamat']) ?>&amp;output=embed"></iframe>
+                <iframe src="<?= e($mapEmbedUrl) ?>" width="600" height="450" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
-            <h3 class="location-name">Hotel Pangeran Pekanbaru</h3>
+            <h3 class="location-name"><?= e($acara['lokasi']) ?></h3>
             <p class="location-address"><?= e($acara['alamat']) ?></p>
-            <a href="https://www.google.com/maps/dir/?api=1&amp;destination=Hotel+Pangeran+Pekanbaru%2C+Jl.+Jend.+Sudirman+No.+371-373%2C+Pekanbaru%2C+Riau" target="_blank" class="btn">➔ PETUNJUK ARAH</a>
+            <a href="<?= e($mapDirectionsUrl) ?>" target="_blank" rel="noopener noreferrer" class="btn">➔ PETUNJUK ARAH</a>
             <p class="location-note">Parkir tersedia · Akses transportasi umum tersedia</p>
         </section>
 
@@ -321,10 +394,14 @@ if (!$acara) {
             <div class="section-subtitle">Gallery</div>
             <h2 class="section-title">Our Memories</h2>
             <div class="gallery-grid">
-                <div class="gallery-item"><img src="nokia.jpeg" alt="Gallery 1"></div>
-                <div class="gallery-item"><img src="shadow.jpeg" alt="Gallery 2"></div>
-                <div class="gallery-item"><img src="sit.jpeg" alt="Gallery 3"></div>
-                <div class="gallery-item"><img src="throwing_flower.jpeg" alt="Gallery 4"></div>
+                <?php foreach ($galleryList as $photo): ?>
+                    <div class="gallery-item">
+                        <img src="<?= e($photo['foto_path']) ?>" alt="<?= e($photo['alt_text'] ?: 'Foto galeri undangan') ?>" loading="lazy" decoding="async">
+                    </div>
+                <?php endforeach; ?>
+                <?php if (!$galleryList): ?>
+                    <p>Galeri foto akan segera hadir.</p>
+                <?php endif; ?>
             </div>
             <p class="gallery-footer">Picture speaks a thousand words</p>
         </section>
@@ -425,63 +502,83 @@ if (!$acara) {
             <?php endif; ?>
         </div>
     </div>
-</section>>
+</section>
     </div>
 </div>
+<?php if ($musikFile !== ''): ?>
+    <audio id="invitationMusic" src="<?= e($musikFile) ?>" loop preload="none"></audio>
+<?php endif; ?>
 <script>
-    window.addEventListener("message", function (event) {
-        if (
-            event.source !== window.opener ||
-            !event.data ||
-            event.data.type !== "wedding-preview-update"
-        ) {
-            return;
-        }
-
-        const data = event.data.data;
-        const coupleNames = document.querySelectorAll(".couple-name");
-        const fullNames = document.querySelectorAll(".couple-fullname");
-        const eventSection = document.querySelector(".event-grid").closest("section");
-        eventSection.querySelector(".section-title").textContent = data.date;
-        eventSection.querySelector(".date-highlight").textContent = data.date.toUpperCase();
-
-        document.querySelector(".cover-title").textContent =
-            `${data.groom} & ${data.bride}`;
-
-        document.querySelector(".cover-date").textContent =
-            `${data.date} — ${data.city.toUpperCase()}`;
-
-        document.querySelector(".quote-text").textContent = data.quote;
-
-        document.querySelectorAll(".event-location").forEach(element => {
-            element.textContent = data.venue;
+    const invitationMusic = document.getElementById('invitationMusic');
+    const musicToggle = document.getElementById('mainMusicToggle');
+    const musicLabel = document.getElementById('mainMusicLabel');
+    const coverReturn = document.getElementById('coverReturn');
+    const musicPreferenceKey = 'projectUndanganMusicOn';
+    const embeddedInWelcome = window.parent !== window;
+    function updateMainMusicButton() {
+        const playing = invitationMusic && !invitationMusic.paused;
+        musicToggle.setAttribute('aria-pressed', playing ? 'true' : 'false');
+        musicToggle.setAttribute('aria-label', playing ? 'Matikan musik' : 'Putar musik');
+        musicLabel.textContent = playing ? 'Matikan musik' : 'Putar musik';
+    }
+    if (embeddedInWelcome) {
+        coverReturn.hidden = false;
+        coverReturn.addEventListener('click', () => {
+            window.parent.postMessage({ channel: 'project-undangan', action: 'show-cover' }, window.location.origin);
         });
-
-        document.querySelector(".location-name").textContent = data.venue;
-        document.querySelector(".location-address").textContent = data.address;
-
-        if (coupleNames.length >= 2) {
-            coupleNames[0].textContent = data.bride;
-            coupleNames[1].textContent = data.groom;
+        musicToggle.addEventListener('click', () => {
+            window.parent.postMessage({ channel: 'project-undangan', action: 'toggle-music' }, window.location.origin);
+        });
+        window.addEventListener('message', event => {
+            if (event.origin !== window.location.origin || event.source !== window.parent
+                || event.data?.channel !== 'project-undangan' || event.data.action !== 'music-state') return;
+            musicToggle.setAttribute('aria-pressed', event.data.playing ? 'true' : 'false');
+            musicToggle.setAttribute('aria-label', event.data.playing ? 'Matikan musik' : 'Putar musik');
+            musicLabel.textContent = event.data.playing ? 'Matikan musik' : 'Putar musik';
+        });
+        window.parent.postMessage({ channel: 'project-undangan', action: 'request-music-state' }, window.location.origin);
+    } else if (invitationMusic) {
+        invitationMusic.addEventListener('play', updateMainMusicButton);
+        invitationMusic.addEventListener('pause', updateMainMusicButton);
+        musicToggle.addEventListener('click', async () => {
+            if (invitationMusic.paused) {
+                try {
+                    await invitationMusic.play();
+                    sessionStorage.setItem(musicPreferenceKey, 'on');
+                } catch (error) {
+                    sessionStorage.removeItem(musicPreferenceKey);
+                    musicLabel.textContent = 'Tekan untuk memutar';
+                }
+            } else {
+                invitationMusic.pause();
+                sessionStorage.setItem(musicPreferenceKey, 'off');
+            }
+            updateMainMusicButton();
+        });
+        if (sessionStorage.getItem(musicPreferenceKey) !== 'off') {
+            invitationMusic.play().catch(() => { musicLabel.textContent = 'Tekan untuk memutar'; });
         }
+    }
 
-        if (fullNames.length >= 2) {
-            fullNames[0].textContent = data.bride;
-            fullNames[1].textContent = data.groom;
-        }
-
-        const query = encodeURIComponent(`${data.venue}, ${data.address}`);
-
-        document.querySelector(".map-wrapper iframe").src =
-            `https://www.google.com/maps?q=${query}&output=embed`;
-
-        const directionsLink = document
-            .querySelector(".location-name")
-            .parentElement.querySelector("a.btn");
-
-        directionsLink.href =
-            `https://www.google.com/maps/dir/?api=1&destination=${query}`;
-    });
+    const inviteSections = document.querySelectorAll('.app-content > section');
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion || !('IntersectionObserver' in window)) {
+        inviteSections.forEach(section => section.classList.add('reveal-section', 'is-visible'));
+    } else {
+        document.body.classList.add('reveal-ready');
+        const revealObserver = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.08, rootMargin: '0px 0px -24px 0px' });
+        inviteSections.forEach(section => {
+            section.classList.add('reveal-section');
+            revealObserver.observe(section);
+        });
+    }
 </script>
 </body>
 </html>

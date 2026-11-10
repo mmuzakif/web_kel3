@@ -1,6 +1,15 @@
 <?php
 declare(strict_types=1);
-session_start();
+if (PHP_SAPI !== 'cli') {
+    session_set_cookie_params([
+        'lifetime' => 0,
+        'path' => '/',
+        'secure' => !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off',
+        'httponly' => true,
+        'samesite' => 'Lax',
+    ]);
+    session_start();
+}
 date_default_timezone_set('Asia/Jakarta');
 $host = '127.0.0.1';
 $port = '3306';

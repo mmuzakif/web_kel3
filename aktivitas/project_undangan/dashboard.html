@@ -105,6 +105,31 @@
         td { padding: 15px 25px; font-size: 0.9rem; border-bottom: 1px solid var(--border); }
         tr:last-child td { border-bottom: none; }
         tr:hover td { background: #fafafa; }
+        .rsvp-table-wrap { overflow-x: auto; }
+        .rsvp-table { min-width: 1050px; }
+        .rsvp-table input, .rsvp-table select, .rsvp-table textarea { width: 100%; min-width: 110px; padding: 9px; border: 1px solid var(--border); border-radius: 6px; font: inherit; background: #fff; }
+        .rsvp-table textarea { min-width: 220px; resize: vertical; }
+        .rsvp-table .rsvp-count { min-width: 75px; }
+        .media-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 20px; }
+        .media-card { padding: 20px; border: 1px solid var(--border); border-radius: 12px; background: #fff; }
+        .media-card h4 { margin-bottom: 14px; font-family: 'Playfair Display', serif; font-size: 1.1rem; }
+        .media-preview { display: block; width: 100%; height: 180px; margin-bottom: 14px; border: 1px solid var(--border); border-radius: 10px; background: #f4f6f4; object-fit: contain; }
+        .media-preview.round { width: 160px; height: 160px; margin: 0 auto 14px; border-radius: 50%; object-fit: cover; }
+        .media-card input[type=file] { width: 100%; margin: 5px 0 12px; font: inherit; font-size: .85rem; }
+        .media-card audio { width: 100%; margin-bottom: 14px; }
+        .gallery-upload-card { display: grid; grid-template-columns: 1fr; gap: 20px; align-items: center; margin-bottom: 24px; padding: 18px; border: 1px dashed #cbd2c7; border-radius: 12px; background: #fbfcfa; }
+        .gallery-upload-card.has-preview { grid-template-columns: minmax(150px, 220px) 1fr; }
+        .gallery-upload-card img { width: 100%; height: 150px; border-radius: 9px; background: #f0f2ee; object-fit: contain; }
+        .gallery-upload-card img[hidden] { display: none; }
+        .gallery-upload-controls label { display: block; margin: 8px 0 6px; color: var(--text-light); font-size: .82rem; font-weight: 600; }
+        .gallery-upload-controls input[type=file] { width: 100%; margin-bottom: 10px; font: inherit; font-size: .85rem; }
+        .gallery-upload-controls input[type=text], .gallery-admin-card input[type=text], .gallery-admin-card input[type=number] { width: 100%; padding: 10px 12px; border: 1px solid var(--border); border-radius: 7px; font: inherit; }
+        .gallery-admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px; }
+        .gallery-admin-card { min-width: 0; padding: 14px; border: 1px solid var(--border); border-radius: 12px; background: #fff; box-shadow: 0 4px 14px rgba(0,0,0,.035); }
+        .gallery-admin-card > img { display: block; width: 100%; height: 180px; margin-bottom: 12px; border-radius: 9px; background: #f0f2ee; object-fit: cover; }
+        .gallery-admin-card label { display: block; margin: 10px 0 5px; color: var(--text-light); font-size: .78rem; font-weight: 600; }
+        .gallery-admin-card input[type=file] { width: 100%; margin: 5px 0 12px; font: inherit; font-size: .78rem; }
+        .gallery-admin-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
         .badge { display: inline-block; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; }
         .badge-hadir { background: #d4edda; color: #155724; }
         .badge-belum { background: #fff3cd; color: #856404; }
@@ -132,10 +157,10 @@
         <h1>Admin Panel</h1>
         <p>Budi & Siti Wedding</p>
         <div class="login-error" id="loginError">Username atau password salah!</div>
-        <input type="text" id="username" placeholder="Username" value="admin">
-        <input type="password" id="password" placeholder="Password" value="admin123">
+        <input type="text" id="username" placeholder="Username" autocomplete="username" required>
+        <input type="password" id="password" placeholder="Password" autocomplete="current-password" required>
         <button onclick="handleLogin()">🔐 Login</button>
-        <p class="login-hint">Demo: username <b>admin</b> / password <b>admin123</b></p>
+        <p class="login-hint">Gunakan akun admin yang dibuat melalui setup-dashboard.php.</p>
     </div>
 </div>
 
@@ -147,9 +172,11 @@
         <ul class="sidebar-menu">
             <li class="active" onclick="showSection('home', this)">🏠 <span>Dashboard</span></li>
             <li onclick="showSection('landing', this)">📝 <span>Edit Landing</span></li>
+            <li onclick="showSection('media', this)">🖼️ <span>Foto & Musik</span></li>
+            <li onclick="showSection('gallery', this)">🌿 <span>Galeri</span></li>
             <li onclick="showSection('guests', this)">👥 <span>Data Tamu</span></li>
             <li onclick="showSection('wishes', this)">💬 <span>Ucapan & Doa</span></li>
-            <li onclick="window.open('undangan.html', '_blank')">🔗 <span>Lihat Undangan</span></li>
+            <li onclick="openInvitationPreview()">🔗 <span>Lihat Undangan</span></li>
         </ul>
         <button class="logout-btn" onclick="handleLogout()">🚪 Logout</button>
     </div>
@@ -167,22 +194,22 @@
                 <div class="stat-card">
                     <div class="icon">👥</div>
                     <h4>Total Tamu</h4>
-                    <div class="number">5</div>
+                    <div class="number" id="statTotal">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="icon">✅</div>
                     <h4>Konfirmasi Hadir</h4>
-                    <div class="number">3</div>
+                    <div class="number" id="statAttending">0</div>
                 </div>
                 <div class="stat-card">
                     <div class="icon">💬</div>
                     <h4>Ucapan Masuk</h4>
-                    <div class="number">3</div>
+                    <div class="number" id="statWishes">0</div>
                 </div>
             </div>
             <div class="form-card">
                 <h3>Selamat Datang di Admin Panel</h3>
-                <p style="color: var(--text-light); line-height: 1.7;">Gunakan menu di sebelah kiri untuk mengelola undangan pernikahan Anda. Anda dapat mengedit data landing page, mengelola daftar tamu, dan memoderasi ucapan yang masuk.</p>
+                <p style="color: var(--text-light); line-height: 1.7;">Gunakan menu di sebelah kiri untuk mengelola data undangan. Data RSVP, konfirmasi kehadiran, jumlah orang, dan ucapan yang masuk dapat diperbarui dari menu Data Tamu.</p>
             </div>
         </div>
 
@@ -193,36 +220,88 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nama Panggilan Pria</label>
-                        <input type="text" id="editGroom" value="Budi">
+                        <input type="text" id="editGroom" maxlength="100" required>
                     </div>
                     <div class="form-group">
                         <label>Nama Panggilan Wanita</label>
-                        <input type="text" id="editBride" value="Siti">
+                        <input type="text" id="editBride" maxlength="100" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Tanggal Pernikahan</label>
-                        <input type="text" id="editDate" value="12 Desember 2026">
+                        <input type="date" id="editDate" required>
                     </div>
                     <div class="form-group">
                         <label>Kota</label>
-                        <input type="text" id="editCity" value="Pekanbaru">
+                        <input type="text" id="editCity" maxlength="100" required>
+                    </div>
+                </div>
+                <h4 style="margin: 24px 0 12px;">Jadwal Acara</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Akad — mulai</label>
+                        <input type="time" id="editAkadStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Akad — selesai</label>
+                        <input type="time" id="editAkadEnd" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Resepsi — mulai</label>
+                        <input type="time" id="editResepsiStart" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Resepsi — selesai</label>
+                        <input type="time" id="editResepsiEnd" required>
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Nama Lokasi / Gedung</label>
-                    <input type="text" id="editVenue" value="Hotel Pangeran">
+                    <input type="text" id="editVenue" maxlength="150" required>
                 </div>
                 <div class="form-group">
                     <label>Alamat Lengkap</label>
-                    <textarea rows="3" id="editAddress">Jl. Sudirman</textarea>
+                    <textarea rows="3" id="editAddress" maxlength="5000" required></textarea>
                 </div>
 
                 
-                <div class="form-group" style="display: none;">
+                <div class="form-group">
                     <label>Kalimat Pembuka (Quote)</label>
-                    <textarea rows="3" id="editQuote">"Dan di antara tanda-tanda kebesaran-Nya, Dia menciptakan pasangan-pasangan untukmu agar kamu cenderung dan merasa tenteram kepadanya."</textarea>
+                    <textarea rows="3" id="editQuote" maxlength="4000"></textarea>
+                </div>
+                <h4 style="margin: 24px 0 12px;">Data Keluarga</h4>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Keterangan mempelai pria</label>
+                        <input type="text" id="editGroomBirthOrder" maxlength="100" placeholder="Contoh: Putra kedua">
+                    </div>
+                    <div class="form-group">
+                        <label>Keterangan mempelai wanita</label>
+                        <input type="text" id="editBrideBirthOrder" maxlength="100" placeholder="Contoh: Putri pertama">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama ayah mempelai pria</label>
+                        <input type="text" id="editGroomFather" maxlength="150">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama ibu mempelai pria</label>
+                        <input type="text" id="editGroomMother" maxlength="150">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama ayah mempelai wanita</label>
+                        <input type="text" id="editBrideFather" maxlength="150">
+                    </div>
+                    <div class="form-group">
+                        <label>Nama ibu mempelai wanita</label>
+                        <input type="text" id="editBrideMother" maxlength="150">
+                    </div>
                 </div>
             
             
@@ -232,55 +311,80 @@
             </div>
         </div>
 
+        <!-- === SECTION: PHOTO AND MUSIC === -->
+        <div class="content-section" id="section-media">
+            <div class="form-card">
+                <h3>🖼️ Foto & Musik Undangan</h3>
+                <p style="color: var(--text-light); line-height: 1.7; margin: -8px 0 22px;">Unggah foto JPG, PNG, atau WebP (maks. 12 MB), dan lagu MP3, OGG, WAV, atau M4A (maks. 25 MB). Foto dan lagu lama tetap tersimpan sebagai cadangan.</p>
+                <div class="media-grid">
+                    <div class="media-card">
+                        <h4>Foto Sampul</h4>
+                        <img class="media-preview" id="previewCover" src="bunga_final2.jpeg" alt="Pratinjau foto sampul">
+                        <input type="file" id="mediaCover" accept="image/jpeg,image/png,image/webp" onchange="previewUploadedMedia('cover')">
+                        <button class="btn-save" onclick="uploadMedia('cover')">Unggah Foto</button>
+                    </div>
+                    <div class="media-card">
+                        <h4>Foto Mempelai Pria</h4>
+                        <img class="media-preview round" id="previewGroom" src="bunga_final2_fahrul.jpeg" alt="Pratinjau foto mempelai pria">
+                        <input type="file" id="mediaGroom" accept="image/jpeg,image/png,image/webp" onchange="previewUploadedMedia('groom')">
+                        <button class="btn-save" onclick="uploadMedia('groom')">Unggah Foto</button>
+                    </div>
+                    <div class="media-card">
+                        <h4>Foto Mempelai Wanita</h4>
+                        <img class="media-preview round" id="previewBride" src="bunga_final2_riva.jpeg" alt="Pratinjau foto mempelai wanita">
+                        <input type="file" id="mediaBride" accept="image/jpeg,image/png,image/webp" onchange="previewUploadedMedia('bride')">
+                        <button class="btn-save" onclick="uploadMedia('bride')">Unggah Foto</button>
+                    </div>
+                    <div class="media-card">
+                        <h4>Lagu Undangan</h4>
+                        <audio id="previewMusic" controls preload="none"></audio>
+                        <input type="file" id="mediaMusic" accept="audio/mpeg,audio/ogg,audio/wav,audio/mp4,.mp3,.ogg,.wav,.m4a" onchange="previewUploadedMedia('music')">
+                        <button class="btn-save" onclick="uploadMedia('music')">Unggah Lagu</button>
+                        <p style="margin-top: 12px; color: var(--text-light); font-size: .8rem; line-height: 1.6;">Tamu dapat memutar atau menghentikan musik dari tombol pada halaman pembuka dan undangan.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- === SECTION: GALLERY === -->
+        <div class="content-section" id="section-gallery">
+            <div class="form-card">
+                <h3>🌿 Galeri Foto</h3>
+                <p style="color: var(--text-light); line-height: 1.7; margin: -8px 0 20px;">Foto yang ditampilkan di sini akan muncul di galeri undangan. Tambahkan foto baru, ganti foto lama, ubah urutan, atau hapus foto.</p>
+                <div class="gallery-upload-card">
+                    <img id="galleryNewPreview" alt="Pratinjau foto baru" hidden>
+                    <div class="gallery-upload-controls">
+                        <label for="galleryNewFile">Pilih foto baru (JPG, PNG, WebP; maks. 12 MB)</label>
+                        <input type="file" id="galleryNewFile" accept="image/jpeg,image/png,image/webp" onchange="previewNewGalleryPhoto()">
+                        <label for="galleryNewAlt">Deskripsi foto</label>
+                        <input type="text" id="galleryNewAlt" maxlength="150" placeholder="Contoh: Momen bahagia bersama">
+                        <button class="btn-save" style="margin-top: 12px;" onclick="addGalleryPhoto()">+ Tambah ke Galeri</button>
+                    </div>
+                </div>
+                <div class="gallery-admin-grid" id="galleryAdminGrid"><p>Memuat foto galeri…</p></div>
+            </div>
+        </div>
+
         <!-- === SECTION: DATA TAMU === -->
         <div class="content-section" id="section-guests">
             <div class="table-card">
                 <div class="table-header">
-                    <h3>👥 Data Tamu Undangan</h3>
-                    <button class="btn-save" onclick="addGuest()">+ Tambah Tamu</button>
+                    <h3>👥 Data RSVP & Ucapan</h3>
+                    <button class="btn-save" onclick="loadRsvp()">Muat Ulang</button>
                 </div>
-                <table>
+                <div class="rsvp-table-wrap"><table class="rsvp-table">
                     <thead>
                         <tr>
                             <th>Nama</th>
-                            <th>Alamat</th>
-                            <th>Status</th>
+                            <th>Konfirmasi</th>
+                            <th>Jumlah Orang</th>
+                            <th>Ucapan</th>
+                            <th>Waktu Kirim</th>
                             <th>Aksi</th>
                         </tr>
                     </thead>
-                    <tbody id="guestTableBody">
-                        <tr>
-                            <td>Bapak Andi & Keluarga</td>
-                            <td>Jakarta Selatan</td>
-                            <td><span class="badge badge-hadir">Hadir</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Dinda & Naufal</td>
-                            <td>Bandung</td>
-                            <td><span class="badge badge-hadir">Hadir</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Maya</td>
-                            <td>Surabaya</td>
-                            <td><span class="badge badge-belum">Belum Pasti</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Budi Santoso</td>
-                            <td>Yogyakarta</td>
-                            <td><span class="badge badge-tidak">Tidak Hadir</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Rina & Adi</td>
-                            <td>Semarang</td>
-                            <td><span class="badge badge-hadir">Hadir</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <tbody id="rsvpTableBody"><tr><td colspan="6">Memuat data RSVP…</td></tr></tbody>
+                </table></div>
             </div>
         </div>
 
@@ -288,42 +392,12 @@
         <div class="content-section" id="section-wishes">
             <div class="table-card">
                 <div class="table-header">
-                    <h3>💬 Moderasi Ucapan & Doa</h3>
-                    <span style="font-size: 0.85rem; color: var(--text-light);">24 ucapan masuk</span>
+                    <h3>💬 Ucapan & Doa</h3>
                 </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Nama</th>
-                            <th>Ucapan</th>
-                            <th>Status</th>
-                            <th>Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="wishTableBody">
-                        <tr>
-                            <td>Dinda & Naufal</td>
-                            <td>Selamat menempuh hidup baru. Semoga selalu dilimpahi kebahagiaan.</td>
-                            <td><span class="badge badge-hadir">Disetujui</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Maya</td>
-                            <td>Turut berbahagia untuk Budi dan Siti!</td>
-                            <td><span class="badge badge-hadir">Disetujui</span></td>
-                            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-                        </tr>
-                        <tr>
-                            <td>Budi Santoso</td>
-                            <td>Barakallahu lakuma wa baraka 'alaikuma...</td>
-                            <td><span class="badge badge-belum">Pending</span></td>
-                            <td>
-                                <button class="btn-success" onclick="approveRow(this)">Setujui</button>
-                                <button class="btn-danger" onclick="deleteRow(this)">Hapus</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div style="padding: 24px; color: var(--text-light); line-height: 1.7;">
+                    Ucapan yang dikirim melalui formulir RSVP akan muncul di undangan. Kamu dapat mengubah atau menghapus ucapan dari menu <b>Data Tamu</b>.
+                    <div style="margin-top: 16px;"><button class="btn-save" onclick="showSection('guests', document.querySelectorAll('.sidebar-menu li')[4])">Buka Data RSVP</button></div>
+                </div>
             </div>
         </div>
 
@@ -334,26 +408,102 @@
 <div class="notification" id="notification">Perubahan berhasil disimpan!</div>
 
 <script>
-    // --- LOGIN LOGIC ---
-    function handleLogin() {
+    let dashboardCsrf = '';
+    let invitationPreview = null;
+    const mediaPreviewObjectUrls = {};
+    const galleryPreviewObjectUrls = new Map();
+
+    async function handleLogin() {
         const user = document.getElementById('username').value.trim();
-        const pass = document.getElementById('password').value.trim();
+        const pass = document.getElementById('password').value;
         const error = document.getElementById('loginError');
 
-        if (user === 'admin' && pass === 'admin123') {
+        try {
+            const response = await fetch('dashboard-api.php?action=login', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username: user, password: pass })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Login gagal.');
+
+            dashboardCsrf = result.csrf;
             error.style.display = 'none';
             document.getElementById('loginPage').style.display = 'none';
             document.getElementById('dashboardPage').style.display = 'flex';
-        } else {
+            document.getElementById('password').value = '';
+            await loadEvent();
+            await loadRsvp();
+            await loadGallery();
+        } catch (exception) {
+            error.textContent = exception.message || 'Tidak dapat menghubungi server.';
             error.style.display = 'block';
         }
     }
 
-    function handleLogout() {
+    async function handleLogout() {
+        try {
+            await fetch('dashboard-api.php?action=logout', {
+                method: 'POST',
+                credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ csrf: dashboardCsrf })
+            });
+        } catch (exception) {
+            // The page returns to login even if the network is unavailable.
+        }
+        dashboardCsrf = '';
         document.getElementById('dashboardPage').style.display = 'none';
         document.getElementById('loginPage').style.display = 'flex';
-        document.getElementById('username').value = 'admin';
-        document.getElementById('password').value = 'admin123';
+        document.getElementById('password').value = '';
+    }
+
+    async function loadEvent() {
+        const response = await fetch('dashboard-api.php?action=event', { credentials: 'same-origin' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Data acara tidak dapat dimuat.');
+        const event = result.event;
+        document.getElementById('editGroom').value = event.nama_pria || '';
+        document.getElementById('editBride').value = event.nama_wanita || '';
+        document.getElementById('editDate').value = event.tanggal || '';
+        document.getElementById('editCity').value = event.kota || '';
+        document.getElementById('editVenue').value = event.lokasi || '';
+        document.getElementById('editAddress').value = event.alamat || '';
+        document.getElementById('editQuote').value = event.kutipan || '';
+        document.getElementById('editAkadStart').value = (event.waktu_akad_mulai || '').slice(0, 5);
+        document.getElementById('editAkadEnd').value = (event.waktu_akad_selesai || '').slice(0, 5);
+        document.getElementById('editResepsiStart').value = (event.waktu_resepsi_mulai || '').slice(0, 5);
+        document.getElementById('editResepsiEnd').value = (event.waktu_resepsi_selesai || '').slice(0, 5);
+        document.getElementById('editGroomFather').value = event.ayah_pria || '';
+        document.getElementById('editGroomMother').value = event.ibu_pria || '';
+        document.getElementById('editGroomBirthOrder').value = event.keterangan_pria || '';
+        document.getElementById('editBrideFather').value = event.ayah_wanita || '';
+        document.getElementById('editBrideMother').value = event.ibu_wanita || '';
+        document.getElementById('editBrideBirthOrder').value = event.keterangan_wanita || '';
+        displayMediaPreview('cover', event.foto_sampul || 'bunga_final2.jpeg');
+        displayMediaPreview('groom', event.foto_pria || 'bunga_final2_fahrul.jpeg');
+        displayMediaPreview('bride', event.foto_wanita || 'bunga_final2_riva.jpeg');
+        displayMediaPreview('music', event.musik_file || '');
+    }
+
+    async function initializeDashboard() {
+        try {
+            const response = await fetch('dashboard-api.php?action=state', { credentials: 'same-origin' });
+            const state = await response.json();
+            if (state.authenticated) {
+                dashboardCsrf = state.csrf;
+                document.getElementById('loginPage').style.display = 'none';
+                document.getElementById('dashboardPage').style.display = 'flex';
+                await loadEvent();
+                await loadRsvp();
+                await loadGallery();
+            }
+        } catch (exception) {
+            const error = document.getElementById('loginError');
+            error.textContent = 'Tidak dapat menghubungi server. Periksa Laragon dan MySQL.';
+            error.style.display = 'block';
+        }
     }
 
     // --- SECTION SWITCHING ---
@@ -371,81 +521,401 @@
         const titles = {
             'home': 'Dashboard',
             'landing': 'Edit Landing Page',
+            'media': 'Foto & Musik',
+            'gallery': 'Galeri Foto',
             'guests': 'Data Tamu',
             'wishes': 'Ucapan & Doa'
         };
         document.getElementById('pageTitle').textContent = titles[sectionName] || 'Dashboard';
+        if (sectionName === 'guests') loadRsvp().catch(error => showNotification(error.message));
+        if (sectionName === 'gallery') loadGallery().catch(error => showNotification(error.message));
     }
 
     // --- SAVE LANDING ---
-    let invitationPreview = null;
-
-function openInvitationPreview() {
-    invitationPreview = window.open("undangan.html", "weddingPreview");
-
-    if (!invitationPreview) {
-        showNotification("Allow pop-ups to open the invitation preview.");
+    function openInvitationPreview() {
+        invitationPreview = window.open('index.php', 'weddingPreview');
+        if (!invitationPreview) showNotification('Izinkan pop-up untuk membuka pratinjau undangan.');
     }
-}
 
-function saveLanding() {
+    async function saveLanding() {
     const data = {
         groom: document.getElementById("editGroom").value.trim(),
         bride: document.getElementById("editBride").value.trim(),
-        date: document.getElementById("editDate").value.trim(),
+        date: document.getElementById("editDate").value,
         city: document.getElementById("editCity").value.trim(),
         venue: document.getElementById("editVenue").value.trim(),
         address: document.getElementById("editAddress").value.trim(),
-        quote: document.getElementById("editQuote").value.trim()
+        quote: document.getElementById("editQuote").value.trim(),
+        akadStart: document.getElementById('editAkadStart').value,
+        akadEnd: document.getElementById('editAkadEnd').value,
+        resepsiStart: document.getElementById('editResepsiStart').value,
+        resepsiEnd: document.getElementById('editResepsiEnd').value,
+        groomFather: document.getElementById('editGroomFather').value.trim(),
+        groomMother: document.getElementById('editGroomMother').value.trim(),
+        groomBirthOrder: document.getElementById('editGroomBirthOrder').value.trim(),
+        brideFather: document.getElementById('editBrideFather').value.trim(),
+        brideMother: document.getElementById('editBrideMother').value.trim(),
+        brideBirthOrder: document.getElementById('editBrideBirthOrder').value.trim()
     };
 
-    if (!invitationPreview || invitationPreview.closed) {
-        invitationPreview = window.open("undangan.html", "weddingPreview");
+    try {
+        const response = await fetch('dashboard-api.php?action=save', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({ ...data, csrf: dashboardCsrf })
+        });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Perubahan gagal disimpan.');
+
+        if (invitationPreview && !invitationPreview.closed) invitationPreview.location.reload();
+        showNotification('Perubahan tersimpan ke database dan undangan.');
+    } catch (exception) {
+        showNotification(exception.message || 'Perubahan gagal disimpan.');
     }
-
-    if (!invitationPreview) {
-        showNotification("Allow pop-ups to open the invitation preview.");
-        return;
-    }
-
-    setTimeout(() => {
-        invitationPreview.postMessage(
-            { type: "wedding-preview-update", data },
-            "*"
-        );
-    }, 400);
-
-    showNotification("Preview updated temporarily. Reload the invitation to reset it.");
 }
 
-    // --- GUEST MANAGEMENT ---
-    function addGuest() {
-        const tbody = document.getElementById('guestTableBody');
-        const row = document.createElement('tr');
-        row.innerHTML = `
-            <td contenteditable="true">Nama Tamu Baru</td>
-            <td contenteditable="true">Alamat</td>
-            <td><span class="badge badge-belum">Belum Pasti</span></td>
-            <td><button class="btn-danger" onclick="deleteRow(this)">Hapus</button></td>
-        `;
-        tbody.appendChild(row);
-        showNotification('✅ Tamu baru ditambahkan. Klik untuk mengedit.');
-    }
-
-    function deleteRow(btn) {
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            btn.closest('tr').remove();
-            showNotification('🗑️ Data berhasil dihapus.');
+    function displayMediaPreview(kind, source, isTemporary = false) {
+        if (mediaPreviewObjectUrls[kind]) {
+            URL.revokeObjectURL(mediaPreviewObjectUrls[kind]);
+            delete mediaPreviewObjectUrls[kind];
+        }
+        if (isTemporary) mediaPreviewObjectUrls[kind] = source;
+        const previewId = { cover: 'previewCover', groom: 'previewGroom', bride: 'previewBride', music: 'previewMusic' }[kind];
+        const preview = document.getElementById(previewId);
+        if (!preview) return;
+        if (kind === 'music') {
+            if (source) preview.src = source;
+            else preview.removeAttribute('src');
+            preview.load();
+        } else {
+            preview.src = source;
         }
     }
 
-    function approveRow(btn) {
-        const row = btn.closest('tr');
-        const badge = row.querySelector('.badge');
-        badge.className = 'badge badge-hadir';
-        badge.textContent = 'Disetujui';
-        btn.remove();
-        showNotification('✅ Ucapan disetujui dan akan tampil di undangan.');
+    function previewUploadedMedia(kind) {
+        const inputId = { cover: 'mediaCover', groom: 'mediaGroom', bride: 'mediaBride', music: 'mediaMusic' }[kind];
+        const file = document.getElementById(inputId).files[0];
+        if (file) displayMediaPreview(kind, URL.createObjectURL(file), true);
+    }
+
+    async function uploadMedia(kind) {
+        const inputId = { cover: 'mediaCover', groom: 'mediaGroom', bride: 'mediaBride', music: 'mediaMusic' }[kind];
+        const input = document.getElementById(inputId);
+        const file = input.files[0];
+        if (!file) {
+            showNotification('Pilih file terlebih dahulu.');
+            return;
+        }
+
+        const form = new FormData();
+        form.append('csrf', dashboardCsrf);
+        form.append('kind', kind);
+        form.append('file', file);
+        try {
+            const response = await fetch('dashboard-api.php?action=upload-media', {
+                method: 'POST', credentials: 'same-origin', body: form
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Media gagal diunggah.');
+            displayMediaPreview(kind, result.path);
+            input.value = '';
+            if (invitationPreview && !invitationPreview.closed) invitationPreview.location.reload();
+            showNotification(result.message);
+        } catch (exception) {
+            showNotification(exception.message || 'Media gagal diunggah.');
+        }
+    }
+
+    // --- RSVP MANAGEMENT ---
+    async function loadRsvp() {
+        const response = await fetch('dashboard-api.php?action=rsvp', { credentials: 'same-origin' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Data RSVP tidak dapat dimuat.');
+
+        document.getElementById('statTotal').textContent = result.summary.total;
+        document.getElementById('statAttending').textContent = result.summary.hadir;
+        document.getElementById('statWishes').textContent = result.summary.ucapan;
+
+        const tbody = document.getElementById('rsvpTableBody');
+        tbody.replaceChildren();
+        if (!result.rsvp.length) {
+            const emptyRow = document.createElement('tr');
+            const emptyCell = document.createElement('td');
+            emptyCell.colSpan = 6;
+            emptyCell.textContent = 'Belum ada data RSVP.';
+            emptyRow.appendChild(emptyCell);
+            tbody.appendChild(emptyRow);
+            return;
+        }
+
+        result.rsvp.forEach(item => {
+            const row = document.createElement('tr');
+            row.dataset.id = item.id;
+
+            const nameCell = document.createElement('td');
+            const name = document.createElement('input');
+            name.className = 'rsvp-name';
+            name.maxLength = 100;
+            name.value = item.nama || '';
+            nameCell.appendChild(name);
+
+            const attendanceCell = document.createElement('td');
+            const attendance = document.createElement('select');
+            attendance.className = 'rsvp-attendance';
+            [['hadir', 'Hadir'], ['tidak', 'Tidak hadir']].forEach(([value, label]) => {
+                const option = document.createElement('option');
+                option.value = value;
+                option.textContent = label;
+                attendance.appendChild(option);
+            });
+            attendance.value = item.kehadiran;
+            attendanceCell.appendChild(attendance);
+
+            const countCell = document.createElement('td');
+            const count = document.createElement('input');
+            count.className = 'rsvp-count';
+            count.type = 'number';
+            count.min = '1';
+            count.max = '5';
+            count.value = item.kehadiran === 'hadir' ? item.jumlah : 0;
+            count.disabled = item.kehadiran !== 'hadir';
+            attendance.addEventListener('change', () => {
+                count.disabled = attendance.value !== 'hadir';
+                if (attendance.value === 'hadir' && Number(count.value) < 1) count.value = 1;
+                if (attendance.value === 'tidak') count.value = 0;
+            });
+            countCell.appendChild(count);
+
+            const wishCell = document.createElement('td');
+            const wish = document.createElement('textarea');
+            wish.className = 'rsvp-wish';
+            wish.maxLength = 500;
+            wish.rows = 3;
+            wish.value = item.ucapan || '';
+            wishCell.appendChild(wish);
+
+            const dateCell = document.createElement('td');
+            dateCell.textContent = item.dibuat_pada
+                ? new Date(String(item.dibuat_pada).replace(' ', 'T')).toLocaleString('id-ID')
+                : '—';
+
+            const actionsCell = document.createElement('td');
+            const saveButton = document.createElement('button');
+            saveButton.className = 'btn-save';
+            saveButton.textContent = 'Simpan';
+            saveButton.addEventListener('click', () => updateRsvp(row));
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'btn-danger';
+            deleteButton.textContent = 'Hapus';
+            deleteButton.style.marginLeft = '6px';
+            deleteButton.addEventListener('click', () => deleteRsvp(item.id));
+            actionsCell.append(saveButton, deleteButton);
+
+            row.append(nameCell, attendanceCell, countCell, wishCell, dateCell, actionsCell);
+            tbody.appendChild(row);
+        });
+    }
+
+    async function updateRsvp(row) {
+        const payload = {
+            id: Number(row.dataset.id),
+            nama: row.querySelector('.rsvp-name').value.trim(),
+            kehadiran: row.querySelector('.rsvp-attendance').value,
+            jumlah: Number(row.querySelector('.rsvp-count').value),
+            ucapan: row.querySelector('.rsvp-wish').value.trim(),
+            csrf: dashboardCsrf
+        };
+        try {
+            const response = await fetch('dashboard-api.php?action=rsvp-update', {
+                method: 'POST', credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(payload)
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Perubahan RSVP gagal disimpan.');
+            await loadRsvp();
+            showNotification(result.message);
+        } catch (error) {
+            showNotification(error.message || 'Perubahan RSVP gagal disimpan.');
+        }
+    }
+
+    async function deleteRsvp(id) {
+        if (!confirm('Hapus data RSVP ini secara permanen?')) return;
+        try {
+            const response = await fetch('dashboard-api.php?action=rsvp-delete', {
+                method: 'POST', credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ id: Number(id), csrf: dashboardCsrf })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Data RSVP gagal dihapus.');
+            await loadRsvp();
+            showNotification(result.message);
+        } catch (error) {
+            showNotification(error.message || 'Data RSVP gagal dihapus.');
+        }
+    }
+
+    function clearGalleryPreviewUrls() {
+        galleryPreviewObjectUrls.forEach(url => URL.revokeObjectURL(url));
+        galleryPreviewObjectUrls.clear();
+    }
+
+    function previewNewGalleryPhoto() {
+        const input = document.getElementById('galleryNewFile');
+        const preview = document.getElementById('galleryNewPreview');
+        const uploadCard = preview.closest('.gallery-upload-card');
+        if (!input.files[0]) {
+            preview.hidden = true;
+            preview.removeAttribute('src');
+            uploadCard.classList.remove('has-preview');
+            return;
+        }
+        if (galleryPreviewObjectUrls.has('new')) URL.revokeObjectURL(galleryPreviewObjectUrls.get('new'));
+        const url = URL.createObjectURL(input.files[0]);
+        galleryPreviewObjectUrls.set('new', url);
+        preview.src = url;
+        preview.hidden = false;
+        uploadCard.classList.add('has-preview');
+    }
+
+    async function loadGallery() {
+        const response = await fetch('dashboard-api.php?action=gallery', { credentials: 'same-origin' });
+        const result = await response.json();
+        if (!response.ok) throw new Error(result.message || 'Foto galeri tidak dapat dimuat.');
+        clearGalleryPreviewUrls();
+        const grid = document.getElementById('galleryAdminGrid');
+        grid.replaceChildren();
+        if (!result.photos.length) {
+            const empty = document.createElement('p');
+            empty.textContent = 'Galeri belum memiliki foto.';
+            grid.appendChild(empty);
+            return;
+        }
+
+        result.photos.forEach(photo => {
+            const card = document.createElement('article');
+            card.className = 'gallery-admin-card';
+            card.dataset.id = photo.id;
+            const image = document.createElement('img');
+            image.src = photo.foto_path;
+            image.alt = photo.alt_text || 'Foto galeri';
+            image.loading = 'lazy';
+            const altLabel = document.createElement('label');
+            altLabel.textContent = 'Deskripsi foto';
+            const altText = document.createElement('input');
+            altText.type = 'text';
+            altText.className = 'gallery-alt-text';
+            altText.maxLength = 150;
+            altText.value = photo.alt_text || '';
+            altLabel.appendChild(altText);
+            const orderLabel = document.createElement('label');
+            orderLabel.textContent = 'Urutan tampil';
+            const orderInput = document.createElement('input');
+            orderInput.type = 'number';
+            orderInput.min = '0';
+            orderInput.max = '9999';
+            orderInput.className = 'gallery-order';
+            orderInput.value = photo.sort_order;
+            orderLabel.appendChild(orderInput);
+            const replaceLabel = document.createElement('label');
+            replaceLabel.textContent = 'Ganti foto (opsional)';
+            const replaceInput = document.createElement('input');
+            replaceInput.type = 'file';
+            replaceInput.accept = 'image/jpeg,image/png,image/webp';
+            replaceInput.className = 'gallery-replacement-file';
+            replaceInput.addEventListener('change', () => {
+                if (!replaceInput.files[0]) return;
+                const key = String(photo.id);
+                if (galleryPreviewObjectUrls.has(key)) URL.revokeObjectURL(galleryPreviewObjectUrls.get(key));
+                const url = URL.createObjectURL(replaceInput.files[0]);
+                galleryPreviewObjectUrls.set(key, url);
+                image.src = url;
+            });
+            replaceLabel.appendChild(replaceInput);
+            const actions = document.createElement('div');
+            actions.className = 'gallery-admin-actions';
+            const saveButton = document.createElement('button');
+            saveButton.className = 'btn-save';
+            saveButton.textContent = 'Simpan';
+            saveButton.addEventListener('click', () => updateGalleryPhoto(card));
+            const deleteButton = document.createElement('button');
+            deleteButton.className = 'btn-danger';
+            deleteButton.textContent = 'Hapus';
+            deleteButton.addEventListener('click', () => deleteGalleryPhoto(photo.id));
+            actions.append(saveButton, deleteButton);
+            card.append(image, altLabel, orderLabel, replaceLabel, actions);
+            grid.appendChild(card);
+        });
+    }
+
+    async function addGalleryPhoto() {
+        const fileInput = document.getElementById('galleryNewFile');
+        if (!fileInput.files[0]) {
+            showNotification('Pilih foto yang akan ditambahkan.');
+            return;
+        }
+        const form = new FormData();
+        form.append('csrf', dashboardCsrf);
+        form.append('alt_text', document.getElementById('galleryNewAlt').value.trim());
+        form.append('file', fileInput.files[0]);
+        try {
+            const response = await fetch('dashboard-api.php?action=gallery-add', {
+                method: 'POST', credentials: 'same-origin', body: form
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Foto gagal ditambahkan.');
+            fileInput.value = '';
+            document.getElementById('galleryNewAlt').value = '';
+            previewNewGalleryPhoto();
+            await loadGallery();
+            showNotification(result.message);
+        } catch (error) {
+            showNotification(error.message || 'Foto gagal ditambahkan.');
+        }
+    }
+
+    async function updateGalleryPhoto(card) {
+        const form = new FormData();
+        form.append('csrf', dashboardCsrf);
+        form.append('id', card.dataset.id);
+        form.append('alt_text', card.querySelector('.gallery-alt-text').value.trim());
+        form.append('sort_order', card.querySelector('.gallery-order').value);
+        const replacement = card.querySelector('.gallery-replacement-file').files[0];
+        if (replacement) form.append('file', replacement);
+        try {
+            const response = await fetch('dashboard-api.php?action=gallery-update', {
+                method: 'POST', credentials: 'same-origin', body: form
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Perubahan foto gagal disimpan.');
+            await loadGallery();
+            showNotification(result.message);
+        } catch (error) {
+            showNotification(error.message || 'Perubahan foto gagal disimpan.');
+        }
+    }
+
+    async function deleteGalleryPhoto(id) {
+        if (!confirm('Hapus foto ini dari galeri undangan?')) return;
+        try {
+            const response = await fetch('dashboard-api.php?action=gallery-delete', {
+                method: 'POST', credentials: 'same-origin',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ id: Number(id), csrf: dashboardCsrf })
+            });
+            const result = await response.json();
+            if (!response.ok) throw new Error(result.message || 'Foto gagal dihapus.');
+            await loadGallery();
+            showNotification(result.message);
+        } catch (error) {
+            showNotification(error.message || 'Foto gagal dihapus.');
+        }
     }
 
     // --- NOTIFICATION ---
@@ -460,6 +930,8 @@ function saveLanding() {
     document.getElementById('password').addEventListener('keypress', function(e) {
         if (e.key === 'Enter') handleLogin();
     });
+
+    document.addEventListener('DOMContentLoaded', initializeDashboard);
 </script>
 
 </body>

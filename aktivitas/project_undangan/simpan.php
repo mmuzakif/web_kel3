@@ -20,7 +20,7 @@ if ($nama === '' || strlen($nama) > 100 || strlen($ucapan) > 500
     || !in_array($kehadiran, ['hadir', 'tidak'], true)
     || ($kehadiran === 'hadir' && ($jumlah === false || $jumlah < 1 || $jumlah > 5))) {
     $_SESSION['flash'] = 'Periksa nama (maks. 100 byte), ucapan (maks. 500 byte), dan jumlah 1–5 jika hadir.';
-    header('Location: index.php#rsvp', true, 303); exit;
+    header('Location: undangan.php#rsvp', true, 303); exit;
 }
 $jumlah = $kehadiran === 'hadir' ? $jumlah : 0;
 try {
