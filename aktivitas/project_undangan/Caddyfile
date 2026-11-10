@@ -1,0 +1,9 @@
+:{$PORT:80} {
+	root * /app
+	encode zstd gzip
+
+	@private path /config.php /setup-dashboard.php /db_undangan.sql /localhost.sql /.env /.env.* /Dockerfile /Caddyfile /README.md
+	respond @private 404
+
+	php_server
+}
